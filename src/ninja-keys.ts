@@ -2,7 +2,7 @@ import {LitElement, html, TemplateResult, PropertyValues} from 'lit';
 import {customElement, property, state} from 'lit/decorators.js';
 import {repeat} from 'lit/directives/repeat.js';
 import {live} from 'lit/directives/live.js';
-import {createRef, ref} from 'lit-html/directives/ref.js';
+import {createRef, ref} from 'lit/directives/ref.js';
 import {classMap} from 'lit/directives/class-map.js';
 import hotkeys from 'hotkeys-js';
 
@@ -99,7 +99,7 @@ export class NinjaKeys extends LitElement {
   open(options: {parent?: string} = {}) {
     this._bump = true;
     this.visible = true;
-    this._headerRef.value!.focusSearch();
+    this._headerRef.value?.focusSearch();
     if (this._actionMatches.length > 0) {
       this._selected = this._actionMatches[0];
     }
@@ -127,7 +127,7 @@ export class NinjaKeys extends LitElement {
     }
     this._selected = undefined;
     this._search = '';
-    this._headerRef.value!.setSearch('');
+    this._headerRef.value?.setSearch('');
   }
 
   /**
@@ -178,7 +178,16 @@ export class NinjaKeys extends LitElement {
     super.connectedCallback();
 
     if (!this.noAutoLoadMdIcons) {
-      document.fonts.load('24px Material Icons', 'apps').then(() => {});
+      const fontAlreadyLoaded =
+        document.querySelector('link[href*="Material+Icons"]') ||
+        document.querySelector('link[href*="material-icons"]');
+      if (!fontAlreadyLoaded) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href =
+          'https://fonts.googleapis.com/icon?family=Material+Icons';
+        document.head.appendChild(link);
+      }
     }
 
     this._registerInternalHotkeys();
@@ -190,7 +199,7 @@ export class NinjaKeys extends LitElement {
   }
 
   private _flattern(members: INinjaAction[], parent?: string): INinjaAction[] {
-    let children = [] as Array<any>;
+    let children: INinjaAction[] = [];
     if (!members) {
       members = [];
     }
@@ -198,18 +207,25 @@ export class NinjaKeys extends LitElement {
       .map((mem) => {
         const alreadyFlatternByUser =
           mem.children &&
-          mem.children.some((value: any) => {
+          mem.children.some((value) => {
             return typeof value == 'string';
           });
-        const m = {...mem, parent: mem.parent || parent};
+        const m: INinjaAction = {...mem, parent: mem.parent || parent};
         if (alreadyFlatternByUser) {
           return m;
         } else {
           if (m.children && m.children.length) {
             parent = mem.id;
-            children = [...children, ...m.children];
+            children = [
+              ...children,
+              ...(m.children as unknown as INinjaAction[]),
+            ];
           }
-          m.children = m.children ? m.children.map((c: any) => c.id) : [];
+          m.children = m.children
+            ? m.children.map(
+                (c) => (c as unknown as INinjaAction).id ?? (c as string)
+              )
+            : [];
           return m;
         }
       })
@@ -238,7 +254,11 @@ export class NinjaKeys extends LitElement {
     if (this.openHotkey) {
       hotkeys(this.openHotkey, (event) => {
         event.preventDefault();
-        this.visible ? this.close() : this.open();
+        if (this.visible) {
+          this.close();
+        } else {
+          this.open();
+        }
       });
     }
 
@@ -464,8 +484,8 @@ export class NinjaKeys extends LitElement {
       this._search = '';
     }
 
-    this._headerRef.value!.setSearch('');
-    this._headerRef.value!.focusSearch();
+    this._headerRef.value?.setSearch('');
+    this._headerRef.value?.focusSearch();
 
     if (action.handler) {
       const result = action.handler(action);

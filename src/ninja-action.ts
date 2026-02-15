@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import {classMap} from 'lit/directives/class-map.js';
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {join} from 'lit/directives/join.js';
-import '@material/mwc-icon';
+
 
 import {INinjaAction} from './interfaces/ininja-action.js';
 
@@ -40,8 +40,23 @@ export class NinjaAction extends LitElement {
       max-height: var(--ninja-icon-size);
       margin-right: 1em;
       color: var(--ninja-icon-color);
-      margin-right: 1em;
       position: relative;
+    }
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: 'liga';
     }
 
     .ninja-title {
@@ -125,8 +140,8 @@ export class NinjaAction extends LitElement {
   override render() {
     let icon;
     if (this.action.mdIcon) {
-      icon = html`<mwc-icon part="ninja-icon" class="ninja-icon"
-        >${this.action.mdIcon}</mwc-icon
+      icon = html`<span part="ninja-icon" class="ninja-icon material-icons"
+        >${this.action.mdIcon}</span
       >`;
     } else if (this.action.icon) {
       icon = unsafeHTML(this.action.icon || '');

@@ -1,8 +1,8 @@
 import summary from 'rollup-plugin-summary';
-import {terser} from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import minifyHTML from 'rollup-plugin-minify-html-literals';
+import minifyHTML from 'rollup-plugin-minify-html-literals-v3';
 
 export default {
   input: 'dist/ninja-keys.js',
@@ -16,13 +16,15 @@ export default {
     }
   },
   plugins: [
-    replace({'Reflect.decorate': 'undefined'}),
+    replace({
+      preventAssignment: true,
+      'Reflect.decorate': 'undefined',
+    }),
     resolve(),
     minifyHTML(),
     terser({
       ecma: 2020,
       module: true,
-      warnings: true,
       mangle: {
         properties: {
           regex: /^__/,
