@@ -4,3 +4,6 @@ node_modules/
 # top level source
 /dist
 /package
+.serena/
+.claude/
+CLAUDE.md
