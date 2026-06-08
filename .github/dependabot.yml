@@ -4,12 +4,15 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    open-pull-requests-limit: 10
+      day: monday
+    open-pull-requests-limit: 5
     groups:
       lit:
         patterns:
           - "lit"
           - "lit-*"
+          - "@lit/*"
+          - "@lit-labs/*"
       rollup:
         patterns:
           - "rollup"
@@ -18,14 +21,36 @@ updates:
       eslint:
         patterns:
           - "eslint"
+          - "eslint-*"
           - "@eslint/*"
           - "typescript-eslint"
+          - "@typescript-eslint/*"
       testing:
         patterns:
-          - "@web/test-runner*"
+          - "@web/*"
           - "@open-wc/*"
+          - "@custom-elements-manifest/*"
+          - "@types/mocha"
+      # Catch-all so any remaining minor/patch bumps batch into one PR each
+      # instead of spawning individual PRs and blowing past the 5-PR limit.
+      dev-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+      production-dependencies:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
