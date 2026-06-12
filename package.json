@@ -76,7 +76,7 @@
     "@web/dev-server": "^0.4.6",
     "@web/test-runner": "^0.20.2",
     "clean-publish": "^6.0.1",
-    "concurrently": "^9.2.1",
+    "concurrently": "^10.0.3",
     "eslint": "^9.39.0",
     "globals": "^17.3.0",
     "husky": "^9.1.7",
