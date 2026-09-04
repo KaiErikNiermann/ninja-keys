@@ -119,12 +119,9 @@ export class NinjaKeys extends LitElement {
    * @param parent id of parent group/action
    */
   setParent(parent?: string) {
-    if (!parent) {
-      this._currentRoot = undefined;
-      // this.breadcrumbs = [];
-    } else {
-      this._currentRoot = parent;
-    }
+    // An empty id means "back to root", same as omitting the argument.
+    this._currentRoot = parent || undefined;
+    // this.breadcrumbs = [];
     this._selected = undefined;
     this._search = '';
     this._headerRef.value?.setSearch('');
@@ -185,7 +182,7 @@ export class NinjaKeys extends LitElement {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
-        document.head.appendChild(link);
+        document.head.append(link);
       }
     }
 
@@ -202,49 +199,55 @@ export class NinjaKeys extends LitElement {
     if (!members) {
       members = [];
     }
-    return members
-      .map((mem) => {
-        const alreadyFlatternByUser =
-          mem.children &&
-          mem.children.some((value) => {
-            return typeof value == 'string';
-          });
-        const m: INinjaAction = {...mem, parent: mem.parent || parent};
-        if (alreadyFlatternByUser) {
-          return m;
-        } else {
-          if (m.children && m.children.length) {
-            parent = mem.id;
-            children = [
-              ...children,
-              ...(m.children as unknown as INinjaAction[]),
-            ];
+    return (
+      members
+        .map((mem) => {
+          const alreadyFlatternByUser =
+            mem.children &&
+            mem.children.some((value) => {
+              return typeof value == 'string';
+            });
+          const m: INinjaAction = {...mem, parent: mem.parent || parent};
+          if (alreadyFlatternByUser) {
+            return m;
+          } else {
+            if (m.children && m.children.length > 0) {
+              parent = mem.id;
+              children = [
+                ...children,
+                ...(m.children as unknown as INinjaAction[]),
+              ];
+            }
+            m.children = m.children
+              ? m.children.map(
+                  (c) => (c as unknown as INinjaAction).id ?? (c as string)
+                )
+              : [];
+            return m;
           }
-          m.children = m.children
-            ? m.children.map(
-                (c) => (c as unknown as INinjaAction).id ?? (c as string)
-              )
-            : [];
-          return m;
-        }
-      })
-      .concat(children.length ? this._flattern(children, parent) : children);
+        })
+        // `children` is filled by the .map() above, so the concat argument has to
+        // be evaluated after it; a spread literal would read as if both halves
+        // were independent of each other.
+        // eslint-disable-next-line unicorn/prefer-spread
+        .concat(
+          children.length > 0 ? this._flattern(children, parent) : children
+        )
+    );
   }
 
   override update(changedProperties: PropertyValues<this>) {
     if (changedProperties.has('data') && !this.disableHotkeys) {
       this._flatData = this._flattern(this.data);
 
-      this._flatData
-        .filter((action) => !!action.hotkey)
-        .forEach((action) => {
-          hotkeys(action.hotkey!, (event) => {
-            event.preventDefault();
-            if (action.handler) {
-              action.handler(action);
-            }
-          });
+      for (const action of this._flatData.filter((action) => !!action.hotkey)) {
+        hotkeys(action.hotkey!, (event) => {
+          event.preventDefault();
+          if (action.handler) {
+            action.handler(action);
+          }
         });
+      }
     }
     super.update(changedProperties);
   }
@@ -289,11 +292,10 @@ export class NinjaKeys extends LitElement {
           return;
         }
         event.preventDefault();
-        if (this._selectedIndex >= this._actionMatches.length - 1) {
-          this._selected = this._actionMatches[0];
-        } else {
-          this._selected = this._actionMatches[this._selectedIndex + 1];
-        }
+        this._selected =
+          this._selectedIndex >= this._actionMatches.length - 1
+            ? this._actionMatches[0]
+            : this._actionMatches[this._selectedIndex + 1];
       });
     }
 
@@ -303,11 +305,10 @@ export class NinjaKeys extends LitElement {
           return;
         }
         event.preventDefault();
-        if (this._selectedIndex === 0) {
-          this._selected = this._actionMatches[this._actionMatches.length - 1];
-        } else {
-          this._selected = this._actionMatches[this._selectedIndex - 1];
-        }
+        this._selected =
+          this._selectedIndex === 0
+            ? this._actionMatches.at(-1)
+            : this._actionMatches[this._selectedIndex - 1];
       });
     }
 
@@ -359,9 +360,7 @@ export class NinjaKeys extends LitElement {
 
   private _goBack() {
     const parent =
-      this.breadcrumbs.length > 1
-        ? this.breadcrumbs[this.breadcrumbs.length - 2]
-        : undefined;
+      this.breadcrumbs.length > 1 ? this.breadcrumbs.at(-2) : undefined;
     this.setParent(parent);
   }
 
@@ -396,11 +395,18 @@ export class NinjaKeys extends LitElement {
       return action.parent === this._currentRoot && matcher;
     });
 
-    const sections = actionMatches.reduce(
-      (entryMap, e) =>
-        entryMap.set(e.section, [...(entryMap.get(e.section) || []), e]),
-      new Map()
-    );
+    // Group by section, preserving first-seen section order. Push into the
+    // existing bucket rather than rebuilding it per action, which the previous
+    // reduce did and which made this quadratic in the number of matches.
+    const sections = new Map<string | undefined, INinjaAction[]>();
+    for (const action of actionMatches) {
+      const bucket = sections.get(action.section);
+      if (bucket) {
+        bucket.push(action);
+      } else {
+        sections.set(action.section, [action]);
+      }
+    }
 
     this._actionMatches = [...sections.values()].flat();
 
@@ -429,12 +435,12 @@ export class NinjaKeys extends LitElement {
       )}`;
 
     const itemTemplates: TemplateResult[] = [];
-    sections.forEach((actions, section) => {
+    for (const [section, actions] of sections.entries()) {
       const header = section
         ? html`<div class="group-header">${section}</div>`
         : undefined;
       itemTemplates.push(html`${header}${actionsList(actions)}`);
-    });
+    }
 
     return html`
       <div @click=${this._overlayClick} class=${classMap(menuClasses)}>

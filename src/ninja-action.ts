@@ -129,10 +129,8 @@ export class NinjaAction extends LitElement {
   }
 
   override updated(changedProperties: Map<string, unknown>) {
-    if (changedProperties.has('selected')) {
-      if (this.selected) {
-        this.ensureInView();
-      }
+    if (changedProperties.has('selected') && this.selected) {
+      this.ensureInView();
     }
   }
 
