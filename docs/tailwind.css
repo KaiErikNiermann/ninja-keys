@@ -1,7 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
+/* v4 replaces `darkMode: 'class'` from the old JS config; the demo toggles
+   `.dark` on <html> (see index.html), so scope the variant to that class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Only the demo page is scanned for utilities (replaces v2's `purge.content`). */
+@source './index.html';
 
 html {
   max-width: 38rem;
