@@ -70,11 +70,10 @@ export default tseslint.config(
     },
   },
   {
-    files: [
-      'rollup.config.js',
-      'web-test-runner.config.js',
-      'eslint.config.js',
-    ],
+    // Build/tooling configs run in node, not the browser. web-dev-server.config.mjs
+    // was absent from this list and uses `process`, which only surfaced once
+    // linting covered more than src/.
+    files: ['*.js', '*.mjs', '*.cjs'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -89,6 +88,15 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['node_modules/**', 'docs/**', 'dist/**', 'custom-elements.json'],
+    ignores: [
+      'node_modules/**',
+      'docs/**',
+      'dist/**',
+      'custom-elements.json',
+      // local tooling state, not project source
+      '.remember/**',
+      '.serena/**',
+      '.claude/**',
+    ],
   }
 );
