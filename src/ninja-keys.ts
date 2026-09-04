@@ -16,7 +16,7 @@ import {baseStyles} from './base-styles.js';
 
 @customElement('ninja-keys')
 export class NinjaKeys extends LitElement {
-  static override styles = [baseStyles];
+  static override readonly styles = [baseStyles];
 
   /**
    * Search placeholder text

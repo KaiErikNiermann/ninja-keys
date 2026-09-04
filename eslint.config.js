@@ -1,10 +1,12 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
+import sonarjs from 'eslint-plugin-sonarjs';
 
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
+  sonarjs.configs.recommended,
   {
     languageOptions: {
       globals: {
@@ -23,6 +25,10 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
+      // A TODO is a deliberate, reviewable marker; flagging every one of them
+      // as an error just pressures people into deleting the marker rather than
+      // doing the work. The one in ninja-keys.ts tracks a real follow-up.
+      'sonarjs/todo-tag': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
