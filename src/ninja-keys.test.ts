@@ -95,6 +95,80 @@ describe('ninja-keys', () => {
     expect(actions.length).to.equal(1);
   });
 
+  it('does not throw on a search that is not a valid regex', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${sampleActions}></ninja-keys>`
+    );
+
+    el.open();
+    await el.updateComplete;
+
+    const header = el.shadowRoot!.querySelector('ninja-header');
+
+    // Each of these is an invalid regular expression on its own, so building
+    // one straight from the search text throws inside render(). They fall back
+    // to a literal substring match, which none of the sample titles contain.
+    for (const search of ['(', '[', '*', '+', 'a)b']) {
+      header!.dispatchEvent(
+        new CustomEvent('change', {
+          detail: {search},
+          bubbles: false,
+          composed: false,
+        })
+      );
+      await el.updateComplete;
+
+      expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(
+        0,
+        `search ${JSON.stringify(search)} should match nothing, not throw`
+      );
+    }
+  });
+
+  it('falls back to a literal match for an unparseable search', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys
+        .data=${[{id: 'calc', title: 'Compute C++ things'}]}
+      ></ninja-keys>`
+    );
+
+    el.open();
+    await el.updateComplete;
+
+    el.shadowRoot!.querySelector('ninja-header')!.dispatchEvent(
+      new CustomEvent('change', {
+        detail: {search: 'C++'},
+        bubbles: false,
+        composed: false,
+      })
+    );
+    await el.updateComplete;
+
+    expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(1);
+  });
+
+  it('still honours a search that is a valid regular expression', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${sampleActions}></ninja-keys>`
+    );
+
+    el.open();
+    await el.updateComplete;
+
+    // `^Open` anchors, so it selects the two "Open ..." actions and not
+    // "Change Theme" — behaviour this component has always had.
+    el.shadowRoot!.querySelector('ninja-header')!.dispatchEvent(
+      new CustomEvent('change', {
+        detail: {search: '^Open'},
+        bubbles: false,
+        composed: false,
+      })
+    );
+    await el.updateComplete;
+
+    expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(2);
+  });
+
   it('navigates into child menu via setParent', async () => {
     const el = await fixture<NinjaKeys>(
       html`<ninja-keys .data=${sampleActions}></ninja-keys>`

@@ -4,12 +4,11 @@ import {classMap} from 'lit/directives/class-map.js';
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {join} from 'lit/directives/join.js';
 
-
 import {INinjaAction} from './interfaces/ininja-action.js';
 
 @customElement('ninja-action')
 export class NinjaAction extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       display: flex;
       width: 100%;
@@ -130,10 +129,8 @@ export class NinjaAction extends LitElement {
   }
 
   override updated(changedProperties: Map<string, unknown>) {
-    if (changedProperties.has('selected')) {
-      if (this.selected) {
-        this.ensureInView();
-      }
+    if (changedProperties.has('selected') && this.selected) {
+      this.ensureInView();
     }
   }
 

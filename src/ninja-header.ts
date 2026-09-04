@@ -4,7 +4,7 @@ import {ref, createRef} from 'lit/directives/ref.js';
 
 @customElement('ninja-header')
 export class NinjaHeader extends LitElement {
-  static override styles = css`
+  static override readonly styles = css`
     :host {
       flex: 1;
       position: relative;
