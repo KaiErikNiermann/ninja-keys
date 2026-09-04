@@ -377,15 +377,39 @@ export class NinjaKeys extends LitElement {
       modal: true,
     };
 
-    // Plain case-insensitive substring match. Compiling the raw search text
-    // into a RegExp made every metacharacter meaningful, so a lone "(" or "*"
-    // threw SyntaxError out of render(), and a user searching for a title that
-    // genuinely contains "(" could not find it.
-    const search = this._search.toLowerCase();
+    // Match on the search text as a regular expression, which is what this
+    // component has always done, but fall back to a literal case-insensitive
+    // substring when it does not parse as one. Building the RegExp
+    // unconditionally meant a lone "(", "[", "*" or "+" — all ordinary
+    // keystrokes in a command palette — threw SyntaxError out of render().
+    //
+    // No `g` flag: the pattern is reused across every action below, and `g`
+    // makes test() carry lastIndex from one call to the next.
+    const search = this._search;
+    const lowercasedSearch = search.toLowerCase();
+    let pattern: RegExp | undefined;
+    try {
+      // Building a pattern from the search box is this component's documented
+      // behaviour, not an oversight. The SyntaxError path is handled below, and
+      // the remaining risk the rule warns about is catastrophic backtracking —
+      // self-inflicted, in the user's own tab, from text they typed themselves.
+      // No trust boundary is crossed, so this is not escaped.
+      // eslint-disable-next-line security/detect-non-literal-regexp
+      pattern = new RegExp(search, 'i');
+    } catch {
+      pattern = undefined;
+    }
+    const matches = (value?: string) => {
+      if (value === undefined) {
+        return false;
+      }
+      return pattern
+        ? pattern.test(value)
+        : value.toLowerCase().includes(lowercasedSearch);
+    };
+
     const actionMatches = this._flatData.filter((action) => {
-      const matcher =
-        action.title.toLowerCase().includes(search) ||
-        !!action.keywords?.toLowerCase().includes(search);
+      const matcher = matches(action.title) || matches(action.keywords);
 
       if (!this._currentRoot && this._search) {
         // global search for items on root
