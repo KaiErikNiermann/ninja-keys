@@ -95,6 +95,57 @@ describe('ninja-keys', () => {
     expect(actions.length).to.equal(1);
   });
 
+  it('treats regex metacharacters in the search as literal text', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${sampleActions}></ninja-keys>`
+    );
+
+    el.open();
+    await el.updateComplete;
+
+    const header = el.shadowRoot!.querySelector('ninja-header');
+
+    // Each of these is an invalid regular expression on its own, so building
+    // one straight from the search text throws inside render().
+    for (const search of ['(', '[', '*', '+', 'a)b']) {
+      header!.dispatchEvent(
+        new CustomEvent('change', {
+          detail: {search},
+          bubbles: false,
+          composed: false,
+        })
+      );
+      await el.updateComplete;
+
+      expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(
+        0,
+        `search ${JSON.stringify(search)} should match nothing, not throw`
+      );
+    }
+  });
+
+  it('matches a literal metacharacter that really is in a title', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys
+        .data=${[{id: 'calc', title: 'Compute (advanced)'}]}
+      ></ninja-keys>`
+    );
+
+    el.open();
+    await el.updateComplete;
+
+    el.shadowRoot!.querySelector('ninja-header')!.dispatchEvent(
+      new CustomEvent('change', {
+        detail: {search: '(advanced)'},
+        bubbles: false,
+        composed: false,
+      })
+    );
+    await el.updateComplete;
+
+    expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(1);
+  });
+
   it('navigates into child menu via setParent', async () => {
     const el = await fixture<NinjaKeys>(
       html`<ninja-keys .data=${sampleActions}></ninja-keys>`

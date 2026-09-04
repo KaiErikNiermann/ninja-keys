@@ -378,10 +378,15 @@ export class NinjaKeys extends LitElement {
       modal: true,
     };
 
+    // Plain case-insensitive substring match. Compiling the raw search text
+    // into a RegExp made every metacharacter meaningful, so a lone "(" or "*"
+    // threw SyntaxError out of render(), and a user searching for a title that
+    // genuinely contains "(" could not find it.
+    const search = this._search.toLowerCase();
     const actionMatches = this._flatData.filter((action) => {
-      const regex = new RegExp(this._search, 'gi');
       const matcher =
-        action.title.match(regex) || action.keywords?.match(regex);
+        action.title.toLowerCase().includes(search) ||
+        !!action.keywords?.toLowerCase().includes(search);
 
       if (!this._currentRoot && this._search) {
         // global search for items on root
