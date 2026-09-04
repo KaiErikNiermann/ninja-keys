@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>Ninja Keys</title>
@@ -25,41 +25,17 @@
 
     <link rel="stylesheet" href="style.css" />
     <script type="module" src="ninja-keys.bundled.js"></script>
-    
   </head>
 
   <body
-    class="
-      font-inter
-      dark:bg-gray-800 dark:text-gray-200
-      bg-white
-      antialiased
-      text-gray-900
-      tracking-tight
-    "
+    class="font-inter dark:bg-gray-800 dark:text-gray-200 bg-white antialiased text-gray-900 tracking-tight"
   >
     <header>
       <h1
-        class="
-          text-3xl
-          md:text-4xl
-          font-extrabold
-          leading-tighter
-          text-center
-          tracking-tighter
-          mb-4
-        "
+        class="text-3xl md:text-4xl font-extrabold leading-tighter text-center tracking-tighter mb-4"
       >
         <span
-          class="
-            bg-clip-text
-            text-4xl
-            md:text-5xl
-            text-transparent
-            bg-gradient-to-r
-            from-blue-500
-            to-indigo-400
-          "
+          class="bg-clip-text text-4xl md:text-5xl text-transparent bg-gradient-to-r from-blue-500 to-indigo-400"
           >Ninja Keys</span
         ><br />
         Keyboard shorcuts interface for your website
@@ -78,16 +54,7 @@
           </h3>
           <button
             id="btnNinja"
-            class="
-              bg-gray-50
-              m-auto
-              text-gray-400 text-2xl
-              hover:text-gray-900
-              border border-gray-200
-              rounded-xl
-              px-4
-              py-2
-            "
+            class="bg-gray-50 m-auto text-gray-400 text-2xl hover:text-gray-900 border border-gray-200 rounded-xl px-4 py-2"
           >
             ⌘ + K
           </button>
@@ -158,7 +125,7 @@
           hotkey: 'ctrl+T',
           handler: () => {
             // if menu closed
-            ninja.open({ parent: 'Theme'});
+            ninja.open({parent: 'Theme'});
             // if menu opened that prevent it from closing on select such actions
             return {keepOpen: true};
           },

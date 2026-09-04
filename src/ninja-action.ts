@@ -4,7 +4,6 @@ import {classMap} from 'lit/directives/class-map.js';
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {join} from 'lit/directives/join.js';
 
-
 import {INinjaAction} from './interfaces/ininja-action.js';
 
 @customElement('ninja-action')

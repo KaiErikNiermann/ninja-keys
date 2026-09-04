@@ -32,7 +32,11 @@ export default tseslint.config(
     },
   },
   {
-    files: ['rollup.config.js', 'web-test-runner.config.js', 'eslint.config.js'],
+    files: [
+      'rollup.config.js',
+      'web-test-runner.config.js',
+      'eslint.config.js',
+    ],
     languageOptions: {
       globals: {
         ...globals.node,
