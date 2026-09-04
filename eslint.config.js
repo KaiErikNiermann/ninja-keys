@@ -2,11 +2,13 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import sonarjs from 'eslint-plugin-sonarjs';
+import security from 'eslint-plugin-security';
 
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   sonarjs.configs.recommended,
+  security.configs.recommended,
   {
     languageOptions: {
       globals: {
