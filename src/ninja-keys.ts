@@ -236,7 +236,9 @@ export class NinjaKeys extends LitElement {
     if (changedProperties.has('data') && !this.disableHotkeys) {
       for (const action of this._flatData.filter((action) => !!action.hotkey)) {
         hotkeys(action.hotkey!, (event) => {
-          event.preventDefault();
+          // hotkeys.trigger() calls handlers with no arguments, so every
+          // handler here has to work without an event to cancel.
+          event?.preventDefault();
           if (action.handler) {
             action.handler(action);
           }
@@ -249,7 +251,7 @@ export class NinjaKeys extends LitElement {
   private _registerInternalHotkeys() {
     if (this.openHotkey) {
       hotkeys(this.openHotkey, (event) => {
-        event.preventDefault();
+        event?.preventDefault();
         if (this.visible) {
           this.close();
         } else {
@@ -263,7 +265,7 @@ export class NinjaKeys extends LitElement {
         if (!this.visible) {
           return;
         }
-        event.preventDefault();
+        event?.preventDefault();
         this._actionSelected(this._actionMatches[this._selectedIndex]);
       });
     }
@@ -274,7 +276,7 @@ export class NinjaKeys extends LitElement {
           return;
         }
         if (!this._search) {
-          event.preventDefault();
+          event?.preventDefault();
           this._goBack();
         }
       });
@@ -285,7 +287,7 @@ export class NinjaKeys extends LitElement {
         if (!this.visible) {
           return;
         }
-        event.preventDefault();
+        event?.preventDefault();
         this._selected =
           this._selectedIndex >= this._actionMatches.length - 1
             ? this._actionMatches[0]
@@ -298,7 +300,7 @@ export class NinjaKeys extends LitElement {
         if (!this.visible) {
           return;
         }
-        event.preventDefault();
+        event?.preventDefault();
         this._selected =
           this._selectedIndex === 0
             ? this._actionMatches.at(-1)

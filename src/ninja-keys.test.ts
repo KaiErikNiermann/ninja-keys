@@ -2,6 +2,7 @@ import {fixture, html, expect, waitUntil} from '@open-wc/testing';
 import {NinjaKeys} from './ninja-keys.js';
 import './ninja-keys.js';
 import {INinjaAction} from './interfaces/ininja-action.js';
+import hotkeys from 'hotkeys-js';
 
 const sampleActions: INinjaAction[] = [
   {id: 'home', title: 'Open Home', hotkey: 'ctrl+h', section: 'Navigation'},
@@ -383,5 +384,27 @@ describe('ninja-keys', () => {
     await el.updateComplete;
 
     expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(4);
+  });
+
+  it('runs an action hotkey triggered without a keyboard event', async () => {
+    let calls = 0;
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys
+        .data=${[
+          {
+            id: 'save',
+            title: 'Save',
+            hotkey: 'ctrl+alt+s',
+            handler: () => {
+              calls += 1;
+            },
+          },
+        ]}
+      ></ninja-keys>`
+    );
+    await el.updateComplete;
+
+    hotkeys.trigger('ctrl+alt+s');
+    expect(calls).to.equal(1);
   });
 });
