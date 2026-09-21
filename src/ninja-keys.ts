@@ -242,8 +242,25 @@ export class NinjaKeys extends LitElement {
       this._registerActionHotkeys();
     }
 
+    // Internal hotkeys were bound once, on connect. A host that sets them the
+    // ordinary way — a property binding in a template — sets them after the
+    // element is in the document, so the defaults stayed bound and the keys
+    // asked for never worked.
+    if (NinjaKeys._hotkeyProperties.some((key) => changedProperties.has(key))) {
+      this._registerInternalHotkeys();
+    }
+
     super.update(changedProperties);
   }
+
+  private static readonly _hotkeyProperties = [
+    'openHotkey',
+    'selectHotkey',
+    'goBackHotkey',
+    'navigationUpHotkey',
+    'navigationDownHotkey',
+    'closeHotkey',
+  ] as const;
 
   /**
    * Hotkeys this element bound, as [key, handler] pairs. Unbinding by key

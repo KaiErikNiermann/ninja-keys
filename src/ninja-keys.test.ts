@@ -476,4 +476,25 @@ describe('ninja-keys', () => {
     expect(others).to.equal(1);
     hotkeys.unbind('ctrl+alt+g', other);
   });
+
+  it('applies a hotkey changed after the element is connected', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${sampleActions}></ninja-keys>`
+    );
+    await el.updateComplete;
+
+    el.openHotkey = 'ctrl+alt+j';
+    await el.updateComplete;
+
+    hotkeys.trigger('ctrl+alt+j');
+    await el.updateComplete;
+    expect(el.visible).to.be.true;
+
+    // The default it replaced no longer opens anything.
+    el.close();
+    await el.updateComplete;
+    hotkeys.trigger('ctrl+k');
+    await el.updateComplete;
+    expect(el.visible).to.be.false;
+  });
 });
