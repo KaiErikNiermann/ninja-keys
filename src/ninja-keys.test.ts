@@ -407,4 +407,73 @@ describe('ninja-keys', () => {
     hotkeys.trigger('ctrl+alt+s');
     expect(calls).to.equal(1);
   });
+
+  it('binds an action hotkey once across repeated data assignments', async () => {
+    let calls = 0;
+    const actions: INinjaAction[] = [
+      {
+        id: 'save',
+        title: 'Save',
+        hotkey: 'ctrl+alt+d',
+        handler: () => {
+          calls += 1;
+        },
+      },
+    ];
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${actions}></ninja-keys>`
+    );
+    await el.updateComplete;
+
+    el.data = actions;
+    await el.updateComplete;
+    el.data = actions;
+    await el.updateComplete;
+
+    hotkeys.trigger('ctrl+alt+d');
+    expect(calls).to.equal(1);
+  });
+
+  it('releases its action hotkeys when taken out of the document', async () => {
+    let calls = 0;
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys
+        .data=${[
+          {
+            id: 'gone',
+            title: 'Gone',
+            hotkey: 'ctrl+alt+f',
+            handler: () => {
+              calls += 1;
+            },
+          },
+        ]}
+      ></ninja-keys>`
+    );
+    await el.updateComplete;
+
+    el.remove();
+    hotkeys.trigger('ctrl+alt+f');
+    expect(calls).to.equal(0);
+  });
+
+  it('leaves another listener bound to the same key alone', async () => {
+    let others = 0;
+    const other = () => {
+      others += 1;
+    };
+    hotkeys('ctrl+alt+g', other);
+
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys
+        .data=${[{id: 'shared', title: 'Shared', hotkey: 'ctrl+alt+g'}]}
+      ></ninja-keys>`
+    );
+    await el.updateComplete;
+    el.remove();
+
+    hotkeys.trigger('ctrl+alt+g');
+    expect(others).to.equal(1);
+    hotkeys.unbind('ctrl+alt+g', other);
+  });
 });

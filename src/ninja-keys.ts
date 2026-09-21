@@ -4,7 +4,7 @@ import {repeat} from 'lit/directives/repeat.js';
 import {live} from 'lit/directives/live.js';
 import {createRef, ref} from 'lit/directives/ref.js';
 import {classMap} from 'lit/directives/class-map.js';
-import hotkeys from 'hotkeys-js';
+import hotkeys, {KeyHandler} from 'hotkeys-js';
 
 import './ninja-header.js';
 import './ninja-action.js';
@@ -188,11 +188,13 @@ export class NinjaKeys extends LitElement {
     }
 
     this._registerInternalHotkeys();
+    this._registerActionHotkeys();
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback();
-    this._unregisterInternalHotkeys();
+    this._unbindHotkeys(this._internalHotkeys);
+    this._unbindHotkeys(this._actionHotkeys);
   }
 
   private _flattern(members: INinjaAction[], parent?: string): INinjaAction[] {
@@ -233,115 +235,127 @@ export class NinjaKeys extends LitElement {
       this._flatData = this._flattern(this.data);
     }
 
-    if (changedProperties.has('data') && !this.disableHotkeys) {
-      for (const action of this._flatData.filter((action) => !!action.hotkey)) {
-        hotkeys(action.hotkey!, (event) => {
-          // hotkeys.trigger() calls handlers with no arguments, so every
-          // handler here has to work without an event to cancel.
-          event?.preventDefault();
-          if (action.handler) {
-            action.handler(action);
-          }
-        });
-      }
+    if (
+      changedProperties.has('data') ||
+      changedProperties.has('disableHotkeys')
+    ) {
+      this._registerActionHotkeys();
     }
+
     super.update(changedProperties);
   }
 
-  private _registerInternalHotkeys() {
-    if (this.openHotkey) {
-      hotkeys(this.openHotkey, (event) => {
+  /**
+   * Hotkeys this element bound, as [key, handler] pairs. Unbinding by key
+   * alone drops every handler any code on the page registered for that key,
+   * which is not this element's to take away, so each binding is released
+   * with the handler it was made with.
+   */
+  private _internalHotkeys: Array<[string, KeyHandler]> = [];
+  private _actionHotkeys: Array<[string, KeyHandler]> = [];
+
+  private _bindHotkey(
+    bindings: Array<[string, KeyHandler]>,
+    key: string | undefined,
+    handler: KeyHandler
+  ) {
+    if (!key) {
+      return;
+    }
+    hotkeys(key, handler);
+    bindings.push([key, handler]);
+  }
+
+  private _unbindHotkeys(bindings: Array<[string, KeyHandler]>) {
+    for (const [key, handler] of bindings) {
+      hotkeys.unbind(key, handler);
+    }
+    bindings.length = 0;
+  }
+
+  /**
+   * Bind the hotkeys the actions declare, releasing the previous set first.
+   * `data` is reassigned on every keystroke in some hosts, and each pass used
+   * to leave its handlers bound, so one keypress ran every generation of them.
+   */
+  private _registerActionHotkeys() {
+    this._unbindHotkeys(this._actionHotkeys);
+    if (this.disableHotkeys) {
+      return;
+    }
+
+    for (const action of this._flatData.filter((action) => !!action.hotkey)) {
+      this._bindHotkey(this._actionHotkeys, action.hotkey, (event) => {
+        // hotkeys.trigger() calls handlers with no arguments, so every handler
+        // here has to work without an event to cancel.
         event?.preventDefault();
-        if (this.visible) {
-          this.close();
-        } else {
-          this.open();
+        if (action.handler) {
+          action.handler(action);
         }
-      });
-    }
-
-    if (this.selectHotkey) {
-      hotkeys(this.selectHotkey, (event) => {
-        if (!this.visible) {
-          return;
-        }
-        event?.preventDefault();
-        this._actionSelected(this._actionMatches[this._selectedIndex]);
-      });
-    }
-
-    if (this.goBackHotkey) {
-      hotkeys(this.goBackHotkey, (event) => {
-        if (!this.visible) {
-          return;
-        }
-        if (!this._search) {
-          event?.preventDefault();
-          this._goBack();
-        }
-      });
-    }
-
-    if (this.navigationDownHotkey) {
-      hotkeys(this.navigationDownHotkey, (event) => {
-        if (!this.visible) {
-          return;
-        }
-        event?.preventDefault();
-        this._selected =
-          this._selectedIndex >= this._actionMatches.length - 1
-            ? this._actionMatches[0]
-            : this._actionMatches[this._selectedIndex + 1];
-      });
-    }
-
-    if (this.navigationUpHotkey) {
-      hotkeys(this.navigationUpHotkey, (event) => {
-        if (!this.visible) {
-          return;
-        }
-        event?.preventDefault();
-        this._selected =
-          this._selectedIndex === 0
-            ? this._actionMatches.at(-1)
-            : this._actionMatches[this._selectedIndex - 1];
-      });
-    }
-
-    if (this.closeHotkey) {
-      hotkeys(this.closeHotkey, () => {
-        if (!this.visible) {
-          return;
-        }
-        this.close();
       });
     }
   }
 
-  private _unregisterInternalHotkeys() {
-    if (this.openHotkey) {
-      hotkeys.unbind(this.openHotkey);
-    }
+  private _registerInternalHotkeys() {
+    this._unbindHotkeys(this._internalHotkeys);
+    const bind = (key: string, handler: KeyHandler) =>
+      this._bindHotkey(this._internalHotkeys, key, handler);
 
-    if (this.selectHotkey) {
-      hotkeys.unbind(this.selectHotkey);
-    }
+    bind(this.openHotkey, (event) => {
+      event?.preventDefault();
+      if (this.visible) {
+        this.close();
+      } else {
+        this.open();
+      }
+    });
 
-    if (this.goBackHotkey) {
-      hotkeys.unbind(this.goBackHotkey);
-    }
+    bind(this.selectHotkey, (event) => {
+      if (!this.visible) {
+        return;
+      }
+      event?.preventDefault();
+      this._actionSelected(this._actionMatches[this._selectedIndex]);
+    });
 
-    if (this.navigationDownHotkey) {
-      hotkeys.unbind(this.navigationDownHotkey);
-    }
+    bind(this.goBackHotkey, (event) => {
+      if (!this.visible) {
+        return;
+      }
+      if (!this._search) {
+        event?.preventDefault();
+        this._goBack();
+      }
+    });
 
-    if (this.navigationUpHotkey) {
-      hotkeys.unbind(this.navigationUpHotkey);
-    }
+    bind(this.navigationDownHotkey, (event) => {
+      if (!this.visible) {
+        return;
+      }
+      event?.preventDefault();
+      this._selected =
+        this._selectedIndex >= this._actionMatches.length - 1
+          ? this._actionMatches[0]
+          : this._actionMatches[this._selectedIndex + 1];
+    });
 
-    if (this.closeHotkey) {
-      hotkeys.unbind(this.closeHotkey);
-    }
+    bind(this.navigationUpHotkey, (event) => {
+      if (!this.visible) {
+        return;
+      }
+      event?.preventDefault();
+      this._selected =
+        this._selectedIndex === 0
+          ? this._actionMatches.at(-1)
+          : this._actionMatches[this._selectedIndex - 1];
+    });
+
+    bind(this.closeHotkey, () => {
+      if (!this.visible) {
+        return;
+      }
+      this.close();
+    });
   }
 
   private _actionFocused(index: INinjaAction, $event: MouseEvent) {
