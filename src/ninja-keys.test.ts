@@ -22,6 +22,23 @@ const sampleActions: INinjaAction[] = [
   {id: 'child2', title: 'Child Two', parent: 'parent1'},
 ];
 
+const nestedActions: INinjaAction[] = [
+  {
+    id: 'files',
+    title: 'Files',
+    children: [
+      {id: 'new-file', title: 'New File'},
+      {id: 'open-file', title: 'Open File'},
+    ] as unknown as string[],
+  },
+  {
+    id: 'edit',
+    title: 'Edit',
+    children: [{id: 'copy', title: 'Copy'}] as unknown as string[],
+  },
+  {id: 'quit', title: 'Quit'},
+];
+
 describe('ninja-keys', () => {
   it('renders the component', async () => {
     const el = await fixture<NinjaKeys>(
@@ -323,5 +340,34 @@ describe('ninja-keys', () => {
     el2.shadowRoot!.querySelector('ninja-action')!.click();
     await el2.updateComplete;
     expect(el2.visible).to.be.false;
+  });
+
+  it('keeps each parent of a nested tree at the root', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${nestedActions}></ninja-keys>`
+    );
+
+    el.open();
+    await el.updateComplete;
+
+    // Files, Edit, Quit — none of them belongs to a sibling.
+    expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(3);
+  });
+
+  it('files nested children under the member they were declared on', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${nestedActions}></ninja-keys>`
+    );
+
+    el.open();
+    await el.updateComplete;
+
+    el.setParent('files');
+    await el.updateComplete;
+    expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(2);
+
+    el.setParent('edit');
+    await el.updateComplete;
+    expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(1);
   });
 });

@@ -195,45 +195,33 @@ export class NinjaKeys extends LitElement {
   }
 
   private _flattern(members: INinjaAction[], parent?: string): INinjaAction[] {
-    let children: INinjaAction[] = [];
     if (!members) {
-      members = [];
+      return [];
     }
-    return (
-      members
-        .map((mem) => {
-          const alreadyFlatternByUser =
-            mem.children &&
-            mem.children.some((value) => {
-              return typeof value == 'string';
-            });
-          const m: INinjaAction = {...mem, parent: mem.parent || parent};
-          if (alreadyFlatternByUser) {
-            return m;
-          } else {
-            if (m.children && m.children.length > 0) {
-              parent = mem.id;
-              children = [
-                ...children,
-                ...(m.children as unknown as INinjaAction[]),
-              ];
-            }
-            m.children = m.children
-              ? m.children.map(
-                  (c) => (c as unknown as INinjaAction).id ?? (c as string)
-                )
-              : [];
-            return m;
-          }
-        })
-        // `children` is filled by the .map() above, so the concat argument has to
-        // be evaluated after it; a spread literal would read as if both halves
-        // were independent of each other.
-        // eslint-disable-next-line unicorn/prefer-spread
-        .concat(
-          children.length > 0 ? this._flattern(children, parent) : children
-        )
-    );
+
+    // Descendants are appended after the whole level, so a nested tree still
+    // flattens breadth-first. Each subtree is flattened against its own member:
+    // the parent id used to be written to a variable shared by the level, which
+    // handed every later sibling the previous sibling's id and filed the rest
+    // of the menu under the first entry that had children.
+    const descendants: INinjaAction[] = [];
+
+    const level = members.map((mem) => {
+      const m: INinjaAction = {...mem, parent: mem.parent || parent};
+      // Children given as ids mean the caller passed an already flat list.
+      if (m.children?.some((value) => typeof value === 'string')) {
+        return m;
+      }
+
+      const nested = (m.children ?? []) as unknown as INinjaAction[];
+      if (nested.length > 0) {
+        descendants.push(...this._flattern(nested, m.id));
+      }
+      m.children = nested.map((child) => child.id);
+      return m;
+    });
+
+    return [...level, ...descendants];
   }
 
   override update(changedProperties: PropertyValues<this>) {
