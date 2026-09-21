@@ -24,7 +24,8 @@ export class NinjaKeys extends LitElement {
   @property({type: String}) placeholder = 'Type a command or search...';
 
   /**
-   * If true will register all hotkey for all actions
+   * If true, the hotkeys declared by actions are not registered. The palette's
+   * own navigation keys stay bound.
    */
   @property({type: Boolean}) disableHotkeys = false;
 
@@ -225,9 +226,14 @@ export class NinjaKeys extends LitElement {
   }
 
   override update(changedProperties: PropertyValues<this>) {
-    if (changedProperties.has('data') && !this.disableHotkeys) {
+    if (changedProperties.has('data')) {
+      // Flattening is what produces the rendered list, so it runs whether or
+      // not action hotkeys are wanted. Gating it on `disableHotkeys` left the
+      // component with an empty palette whenever that flag was set.
       this._flatData = this._flattern(this.data);
+    }
 
+    if (changedProperties.has('data') && !this.disableHotkeys) {
       for (const action of this._flatData.filter((action) => !!action.hotkey)) {
         hotkeys(action.hotkey!, (event) => {
           event.preventDefault();

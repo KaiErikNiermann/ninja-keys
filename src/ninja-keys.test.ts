@@ -370,4 +370,18 @@ describe('ninja-keys', () => {
     await el.updateComplete;
     expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(1);
   });
+
+  it('still renders actions when disableHotkeys is set', async () => {
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys
+        .disableHotkeys=${true}
+        .data=${sampleActions}
+      ></ninja-keys>`
+    );
+
+    el.open();
+    await el.updateComplete;
+
+    expect(el.shadowRoot!.querySelectorAll('ninja-action').length).to.equal(4);
+  });
 });
