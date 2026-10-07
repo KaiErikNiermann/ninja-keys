@@ -497,4 +497,39 @@ describe('ninja-keys', () => {
     await el.updateComplete;
     expect(el.visible).to.be.false;
   });
+
+  it('focuses the search when opened straight after being created', async () => {
+    // Created and opened in one task, before Lit has rendered the header.
+    const el = document.createElement('ninja-keys') as NinjaKeys;
+    el.data = sampleActions;
+    document.body.append(el);
+    el.open();
+    await el.updateComplete;
+    const header = el.shadowRoot!.querySelector('ninja-header')!;
+    await (header as unknown as {updateComplete: Promise<unknown>}).updateComplete;
+    await waitUntil(() => header.shadowRoot!.activeElement?.tagName === 'INPUT', 'search input focused');
+    el.remove();
+  });
+
+  it('announces opening and closing, once per change', async () => {
+    const el = await fixture<NinjaKeys>(html`<ninja-keys .data=${sampleActions}></ninja-keys>`);
+    const events: string[] = [];
+    el.addEventListener('open', () => events.push('open'));
+    el.addEventListener('close', () => events.push('close'));
+    el.open();
+    el.open();
+    el.close();
+    el.close();
+    expect(events).to.deep.equal(['open', 'close']);
+  });
+
+  it('announces a close made from inside (Escape, an action)', async () => {
+    const el = await fixture<NinjaKeys>(html`<ninja-keys .data=${sampleActions}></ninja-keys>`);
+    let closed = 0;
+    el.addEventListener('close', () => closed++);
+    el.open();
+    await el.updateComplete;
+    (el as unknown as {_actionSelected(a: INinjaAction): void})._actionSelected({...sampleActions[2]!, handler: () => {}});
+    expect(closed).to.equal(1);
+  });
 });

@@ -98,8 +98,10 @@ export class NinjaKeys extends LitElement {
    * Show a modal
    */
   open(options: {parent?: string} = {}) {
+    const wasVisible = this.visible;
     this._bump = true;
     this.visible = true;
+    if (!wasVisible) this._announce('open');
     this._headerRef.value?.focusSearch();
     if (this._actionMatches.length > 0) {
       this._selected = this._actionMatches[0];
@@ -111,8 +113,19 @@ export class NinjaKeys extends LitElement {
    * Close modal
    */
   close() {
+    const wasVisible = this.visible;
     this._bump = false;
     this.visible = false;
+    if (wasVisible) this._announce('close');
+  }
+
+  /**
+   * Fired once per change of visibility, whatever caused it (a method call,
+   * a hotkey, Escape, an overlay click, an action), so a host can restore
+   * focus or tear down whatever it opened the palette in.
+   */
+  private _announce(type: 'open' | 'close') {
+    this.dispatchEvent(new CustomEvent(type, {bubbles: true, composed: true}));
   }
 
   /**
