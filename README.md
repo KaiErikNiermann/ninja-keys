@@ -200,7 +200,7 @@ Array of `INinjaAction` - interface properties below
 
 | Name        | Arg                 | Description                                        |
 | ----------- | ------------------- | -------------------------------------------------- |
-| `open`      | { parent?: string } | Open menu with parent, if null then open root menu |
+| `open`      | { parent?: string, search?: string } | Open menu with parent, if null then open root menu; `search` starts the search box with that text, as if typed |
 | `close`     |                     | Close menu                                         |
 | `setParent` | parent?: string     | Navigate to parent menu                            |
 
@@ -211,6 +211,8 @@ const ninja = document.querySelector('ninja-keys');
 ninja.open();
 // or
 ninja.open({parent: 'Theme'});
+// or, passing on keys typed while the palette was opening
+ninja.open({search: 'the'});
 ```
 
 ### Events

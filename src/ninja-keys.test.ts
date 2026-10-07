@@ -532,4 +532,32 @@ describe('ninja-keys', () => {
     (el as unknown as {_actionSelected(a: INinjaAction): void})._actionSelected({...sampleActions[2]!, handler: () => {}});
     expect(closed).to.equal(1);
   });
+
+  it('opens with a search already typed, filtering and selecting its first match', async () => {
+    // Created and opened in one task, before the header has rendered.
+    const el = document.createElement('ninja-keys') as NinjaKeys;
+    el.data = sampleActions;
+    document.body.append(el);
+    el.open({search: 'sett'});
+    await el.updateComplete;
+    const header = el.shadowRoot!.querySelector('ninja-header')!;
+    await (header as unknown as {updateComplete: Promise<unknown>}).updateComplete;
+    await el.updateComplete;
+    const input = header.shadowRoot!.querySelector('input')!;
+    expect(input.value).to.equal('sett');
+    const shown = [...el.shadowRoot!.querySelectorAll('ninja-action')].map((a) => (a as unknown as {action: INinjaAction}).action.id);
+    expect(shown).to.deep.equal(['settings']);
+    el.remove();
+  });
+
+  it('a later open without a search starts empty', async () => {
+    const el = await fixture<NinjaKeys>(html`<ninja-keys .data=${sampleActions}></ninja-keys>`);
+    el.open({search: 'sett'});
+    await el.updateComplete;
+    el.close();
+    el.open();
+    await el.updateComplete;
+    expect(el.shadowRoot!.querySelectorAll('ninja-action')).to.have.length(sampleActions.filter((a) => !a.parent).length);
+  });
 });
+

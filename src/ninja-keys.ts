@@ -95,9 +95,13 @@ export class NinjaKeys extends LitElement {
    */
 
   /**
-   * Show a modal
+   * Show a modal.
+   *
+   * `search` starts the search box with that text, as if typed: a host that
+   * opens the palette on a key press can pass on what the user typed while
+   * it was opening, instead of dropping it or letting it reach the page.
    */
-  open(options: {parent?: string} = {}) {
+  open(options: {parent?: string; search?: string} = {}) {
     const wasVisible = this.visible;
     this._bump = true;
     this.visible = true;
@@ -107,6 +111,12 @@ export class NinjaKeys extends LitElement {
       this._selected = this._actionMatches[0];
     }
     this.setParent(options.parent);
+    if (options.search) {
+      const search = options.search;
+      this._search = search;
+      // The header may not have rendered yet (opened straight after creation).
+      void this.updateComplete.then(() => this._headerRef.value?.setSearch(search));
+    }
   }
 
   /**
