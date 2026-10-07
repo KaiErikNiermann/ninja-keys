@@ -559,5 +559,20 @@ describe('ninja-keys', () => {
     await el.updateComplete;
     expect(el.shadowRoot!.querySelectorAll('ninja-action')).to.have.length(sampleActions.filter((a) => !a.parent).length);
   });
-});
 
+  it('submit runs the selected action, and only while open', async () => {
+    const ran: string[] = [];
+    const actions = sampleActions.map((a) => ({...a, handler: () => ran.push(a.id)}));
+    const el = await fixture<NinjaKeys>(html`<ninja-keys .data=${actions}></ninja-keys>`);
+    el.submit();
+    expect(ran).to.deep.equal([]);
+    el.open({search: 'sett'});
+    await el.updateComplete;
+    el.submit();
+    expect(ran).to.deep.equal(['settings']);
+    el.open({search: 'no such thing'});
+    await el.updateComplete;
+    el.submit();
+    expect(ran).to.deep.equal(['settings']);
+  });
+});

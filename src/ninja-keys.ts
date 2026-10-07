@@ -120,6 +120,20 @@ export class NinjaKeys extends LitElement {
   }
 
   /**
+   * Run the selected action, as Enter does: after open({search}), the
+   * first match. Does nothing while closed or when nothing matches.
+   */
+  submit() {
+    if (!this.visible) {
+      return;
+    }
+    const action = this._actionMatches[this._selectedIndex];
+    if (action) {
+      this._actionSelected(action);
+    }
+  }
+
+  /**
    * Close modal
    */
   close() {

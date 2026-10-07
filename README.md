@@ -202,6 +202,7 @@ Array of `INinjaAction` - interface properties below
 | ----------- | ------------------- | -------------------------------------------------- |
 | `open`      | { parent?: string, search?: string } | Open menu with parent, if null then open root menu; `search` starts the search box with that text, as if typed |
 | `close`     |                     | Close menu                                         |
+| `submit`    |                     | Run the selected action, as Enter does (after `open({search})`, the first match) |
 | `setParent` | parent?: string     | Navigate to parent menu                            |
 
 #### Example
