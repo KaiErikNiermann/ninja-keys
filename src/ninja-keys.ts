@@ -13,6 +13,21 @@ import {NinjaHeader} from './ninja-header.js';
 import {NinjaAction} from './ninja-action.js';
 import {footerHtml} from './ninja-footer.js';
 import {baseStyles} from './base-styles.js';
+import {
+  Searcher,
+  SearchSuggestion,
+  defaultSearcher,
+  groupBySection,
+} from './searcher.js';
+
+export type {
+  Searcher,
+  SearchContext,
+  SearchResult,
+  SearchSuggestion,
+} from './searcher.js';
+export {defaultSearcher, groupBySection} from './searcher.js';
+export type {INinjaAction} from './interfaces/ininja-action.js';
 
 @customElement('ninja-keys')
 export class NinjaKeys extends LitElement {
@@ -91,6 +106,14 @@ export class NinjaKeys extends LitElement {
   data = [] as Array<INinjaAction>;
 
   /**
+   * Decides which actions a search shows, and may add a notice and
+   * completions under the search box. The default is the regular-expression
+   * match over `title` and `keywords`; `ninja-keys/catsearch` provides a
+   * field query language (`section:guides under.title:rendering`).
+   */
+  @property({attribute: false}) searcher: Searcher = defaultSearcher;
+
+  /**
    * Public methods
    */
 
@@ -115,7 +138,9 @@ export class NinjaKeys extends LitElement {
       const search = options.search;
       this._search = search;
       // The header may not have rendered yet (opened straight after creation).
-      void this.updateComplete.then(() => this._headerRef.value?.setSearch(search));
+      void this.updateComplete.then(() =>
+        this._headerRef.value?.setSearch(search)
+      );
     }
   }
 
@@ -162,6 +187,7 @@ export class NinjaKeys extends LitElement {
     // this.breadcrumbs = [];
     this._selected = undefined;
     this._search = '';
+    this._cursor = undefined;
     this._headerRef.value?.setSearch('');
   }
 
@@ -180,6 +206,13 @@ export class NinjaKeys extends LitElement {
 
   @state()
   private _search = '';
+
+  /** The caret in the search box, or undefined for the end of the text. */
+  @state()
+  private _cursor?: number;
+
+  /** The searcher's completions from the last render. */
+  private _suggestions: readonly SearchSuggestion[] = [];
 
   @state()
   private _currentRoot?: string;
@@ -387,6 +420,13 @@ export class NinjaKeys extends LitElement {
         return;
       }
       event?.preventDefault();
+      // While the searcher offers completions, Tab completes instead of
+      // moving down, as it does in a shell; the arrow keys still move.
+      const [suggestion] = this._suggestions;
+      if (event?.key === 'Tab' && suggestion) {
+        this._takeSuggestion(suggestion);
+        return;
+      }
       this._selected =
         this._selectedIndex >= this._actionMatches.length - 1
           ? this._actionMatches[0]
@@ -441,60 +481,14 @@ export class NinjaKeys extends LitElement {
       modal: true,
     };
 
-    // Match on the search text as a regular expression, which is what this
-    // component has always done, but fall back to a literal case-insensitive
-    // substring when it does not parse as one. Building the RegExp
-    // unconditionally meant a lone "(", "[", "*" or "+" — all ordinary
-    // keystrokes in a command palette — threw SyntaxError out of render().
-    //
-    // No `g` flag: the pattern is reused across every action below, and `g`
-    // makes test() carry lastIndex from one call to the next.
-    const search = this._search;
-    const lowercasedSearch = search.toLowerCase();
-    let pattern: RegExp | undefined;
-    try {
-      // Building a pattern from the search box is this component's documented
-      // behaviour, not an oversight. The SyntaxError path is handled below, and
-      // the remaining risk the rule warns about is catastrophic backtracking —
-      // self-inflicted, in the user's own tab, from text they typed themselves.
-      // No trust boundary is crossed, so this is not escaped.
-      // eslint-disable-next-line security/detect-non-literal-regexp
-      pattern = new RegExp(search, 'i');
-    } catch {
-      pattern = undefined;
-    }
-    const matches = (value?: string) => {
-      if (value === undefined) {
-        return false;
-      }
-      return pattern
-        ? pattern.test(value)
-        : value.toLowerCase().includes(lowercasedSearch);
-    };
-
-    const actionMatches = this._flatData.filter((action) => {
-      const matcher = matches(action.title) || matches(action.keywords);
-
-      if (!this._currentRoot && this._search) {
-        // global search for items on root
-        return matcher;
-      }
-
-      return action.parent === this._currentRoot && matcher;
+    const result = this.searcher(this._search, this._flatData, {
+      root: this._currentRoot,
+      // open({search}) and a cleared box leave no caret; read those as the end.
+      cursor: Math.min(this._cursor ?? Infinity, this._search.length),
     });
-
-    // Group by section, preserving first-seen section order. Push into the
-    // existing bucket rather than rebuilding it per action, which the previous
-    // reduce did and which made this quadratic in the number of matches.
-    const sections = new Map<string | undefined, INinjaAction[]>();
-    for (const action of actionMatches) {
-      const bucket = sections.get(action.section);
-      if (bucket) {
-        bucket.push(action);
-      } else {
-        sections.set(action.section, [action]);
-      }
-    }
+    this._suggestions = result.suggestions ?? [];
+    const notice = result.notice ?? '';
+    const sections = groupBySection(result.actions);
 
     this._actionMatches = [...sections.values()].flat();
 
@@ -534,12 +528,19 @@ export class NinjaKeys extends LitElement {
       <div @click=${this._overlayClick} class=${classMap(menuClasses)}>
         <div class=${classMap(classes)} @animationend=${this._onTransitionEnd}>
           <ninja-header
-            exportparts="ninja-input,ninja-input-wrapper"
+            exportparts="ninja-input,ninja-input-wrapper,ninja-search-hint,ninja-suggestion,ninja-notice"
             ${ref(this._headerRef)}
             .placeholder=${this.placeholder}
             .hideBreadcrumbs=${this.hideBreadcrumbs}
             .breadcrumbs=${this.breadcrumbs}
+            .notice=${notice}
+            .suggestions=${this._suggestions}
             @change=${this._handleInput}
+            @suggestionTaken=${(event: CustomEvent<SearchSuggestion>) =>
+              this._takeSuggestion(event.detail)}
+            @caret=${(event: CustomEvent<{cursor: number}>) => {
+              this._cursor = event.detail.cursor;
+            }}
             @setParent=${(event: CustomEvent<INinjaAction>) =>
               this.setParent(event.detail.parent)}
             @close=${this.close}
@@ -594,8 +595,21 @@ export class NinjaKeys extends LitElement {
     this._bump = true;
   }
 
-  private async _handleInput(event: CustomEvent<{search: string}>) {
-    this._search = event.detail.search;
+  /** Take a completion as if it had been typed: it fires `change` too. */
+  private _takeSuggestion(suggestion: SearchSuggestion) {
+    this._headerRef.value?.setSearch(suggestion.search, suggestion.cursor);
+    this._headerRef.value?.focusSearch();
+    this._selected = undefined;
+    void this._searchChanged(suggestion.search, suggestion.cursor);
+  }
+
+  private _handleInput(event: CustomEvent<{search: string; cursor?: number}>) {
+    void this._searchChanged(event.detail.search, event.detail.cursor);
+  }
+
+  private async _searchChanged(search: string, cursor?: number) {
+    this._search = search;
+    this._cursor = cursor;
     await this.updateComplete;
     this.dispatchEvent(
       new CustomEvent('change', {

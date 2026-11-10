@@ -1,6 +1,7 @@
 import {LitElement, html, css, TemplateResult} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {ref, createRef} from 'lit/directives/ref.js';
+import {SearchSuggestion} from './searcher.js';
 
 @customElement('ninja-header')
 export class NinjaHeader extends LitElement {
@@ -53,6 +54,53 @@ export class NinjaHeader extends LitElement {
       display: flex;
       border-bottom: var(--ninja-separate-border);
     }
+
+    .search-hint {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.375em;
+      padding-block: 0.5em;
+      padding-inline: 1.25em;
+      border-block-end: var(--ninja-separate-border);
+      font-size: 0.875em;
+      color: var(--ninja-secondary-text-color);
+    }
+
+    .suggestion {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.375em;
+      padding-block: 0.125em;
+      padding-inline: 0.5em;
+      border: 0;
+      border-radius: var(--ninja-key-border-radius);
+      background: var(--ninja-secondary-background-color);
+      color: var(--ninja-text-color);
+      font: inherit;
+      cursor: pointer;
+    }
+    .suggestion:hover,
+    .suggestion:focus-visible {
+      outline: 1px solid var(--ninja-accent-color);
+    }
+    .suggestion-label {
+      font-family: var(--ninja-code-font-family, ui-monospace, monospace);
+    }
+    .suggestion-detail,
+    .tab-hint {
+      color: var(--ninja-secondary-text-color);
+      font-size: 0.85em;
+    }
+    .tab-hint {
+      border: 1px solid var(--ninja-secondary-background-color);
+      border-radius: var(--ninja-key-border-radius);
+      padding-inline: 0.3em;
+    }
+    .notice {
+      flex-basis: 100%;
+      font-style: italic;
+    }
   `;
 
   @property()
@@ -66,6 +114,14 @@ export class NinjaHeader extends LitElement {
 
   @property({type: Array})
   breadcrumbs: string[] = [];
+
+  /** One line from the searcher about the query, shown under the input. */
+  @property()
+  notice = '';
+
+  /** The searcher's completions, shown under the input; Tab takes the first. */
+  @property({attribute: false})
+  suggestions: readonly SearchSuggestion[] = [];
 
   private _inputRef = createRef<HTMLInputElement>();
 
@@ -106,18 +162,78 @@ export class NinjaHeader extends LitElement {
           spellcheck="false"
           autocomplete="off"
           @input="${this._handleInput}"
+          @keyup="${this._handleCaret}"
+          @click="${this._handleCaret}"
           ${ref(this._inputRef)}
           placeholder="${this.placeholder}"
           class="search"
         />
       </div>
+      ${this._renderHint()}
     `;
   }
 
-  setSearch(value: string) {
-    if (this._inputRef.value) {
-      this._inputRef.value.value = value;
+  private _renderHint() {
+    if (this.suggestions.length === 0 && !this.notice) {
+      return '';
     }
+    return html`<div part="ninja-search-hint" class="search-hint">
+      ${this.suggestions.map(
+        (suggestion, index) =>
+          html`<button
+            part="ninja-suggestion"
+            class="suggestion"
+            tabindex="-1"
+            @click=${() => this._takeSuggestion(suggestion)}
+          >
+            <span class="suggestion-label">${suggestion.label}</span>
+            ${suggestion.detail
+              ? html`<span class="suggestion-detail"
+                  >${suggestion.detail}</span
+                >`
+              : ''}
+            ${index === 0 ? html`<kbd class="tab-hint">Tab</kbd>` : ''}
+          </button>`
+      )}
+      ${this.notice
+        ? html`<span part="ninja-notice" class="notice">${this.notice}</span>`
+        : ''}
+    </div>`;
+  }
+
+  /** Replace the text, putting the caret at `cursor` (the end when omitted). */
+  setSearch(value: string, cursor?: number) {
+    const input = this._inputRef.value;
+    if (input) {
+      input.value = value;
+      const at = cursor ?? value.length;
+      input.setSelectionRange(at, at);
+    }
+  }
+
+  private _takeSuggestion(suggestion: SearchSuggestion) {
+    this.dispatchEvent(
+      new CustomEvent('suggestionTaken', {
+        detail: suggestion,
+        bubbles: false,
+        composed: false,
+      })
+    );
+  }
+
+  /** Completions depend on the caret, which moves without an input event. */
+  private _handleCaret() {
+    const input = this._inputRef.value;
+    if (!input) {
+      return;
+    }
+    this.dispatchEvent(
+      new CustomEvent('caret', {
+        detail: {cursor: input.selectionStart ?? input.value.length},
+        bubbles: false,
+        composed: false,
+      })
+    );
   }
 
   focusSearch() {
@@ -128,7 +244,10 @@ export class NinjaHeader extends LitElement {
     const input = event.target as HTMLInputElement;
     this.dispatchEvent(
       new CustomEvent('change', {
-        detail: {search: input.value},
+        detail: {
+          search: input.value,
+          cursor: input.selectionStart ?? undefined,
+        },
         bubbles: false,
         composed: false,
       })
