@@ -7,7 +7,8 @@
   "type": "module",
   "exports": {
     ".": "./dist/ninja-keys.js",
-    "./ninja-header": "./dist/ninja-header.js"
+    "./ninja-header": "./dist/ninja-header.js",
+    "./catsearch": "./dist/catsearch.js"
   },
   "scripts": {
     "start": "npm run build && concurrently -k -r \"npm run serve\" \"npm run build:watch\"",
@@ -66,6 +67,14 @@
     "hotkeys-js": "^3.13.9",
     "lit": "^3.3.2"
   },
+  "peerDependencies": {
+    "catsearch": "^0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "catsearch": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.11.0",
     "@eslint/js": "^9.39.0",
@@ -76,6 +85,7 @@
     "@types/mocha": "^10.0.10",
     "@web/dev-server": "^0.4.6",
     "@web/test-runner": "^0.20.2",
+    "catsearch": "file:../../python-tools/textual-catsearch/js",
     "clean-publish": "^6.0.1",
     "concurrently": "^10.0.3",
     "eslint": "^9.39.0",

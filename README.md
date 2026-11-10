@@ -247,6 +247,66 @@ ninja.addEventListener('selected', (event) => {
 });
 ```
 
+## Search
+
+By default the search box is read as a case-insensitive regular expression over each action's `title` and `keywords` (a literal substring when it is not a valid one), across every level at the root and within the open submenu otherwise. Nothing needs configuring for that.
+
+The `searcher` property replaces it. A searcher is a function `(search, actions, {root, cursor}) => {actions, notice?, suggestions?}`: it gets the search text, the flattened actions and the open submenu, and returns the actions to show in order. It may also return a `notice` (one line shown under the box) and `suggestions` (completions shown as chips under the box: clicking one, or pressing <kbd>Tab</kbd> for the first, replaces the search with its `search` text). `defaultSearcher` is exported for searchers that wrap it.
+
+```js
+import {defaultSearcher} from 'ninja-keys';
+
+ninja.searcher = (search, actions, context) => {
+  const result = defaultSearcher(search, actions, context);
+  return {...result, notice: result.actions.length ? '' : 'Nothing here; Enter searches the API'};
+};
+```
+
+### Field queries with catsearch
+
+`ninja-keys/catsearch` is a searcher built on [catsearch](https://github.com/KaiErikNiermann/textual-catsearch/tree/main/js), a small query language with completion. Install `catsearch` next to `ninja-keys` (it is an optional peer dependency; the main entry does not load it).
+
+```js
+import {catsearchSearcher} from 'ninja-keys/catsearch';
+
+ninja.searcher = catsearchSearcher();
+```
+
+Bare words still search titles and keywords, so plain searches read as before. On top of that:
+
+| Query | Matches |
+| --- | --- |
+| `section:guides` | actions in a section; `section:guides,api` for either |
+| `keyword:gpu`, `kw:gpu` | a keyword |
+| `has:hotkey`, `has:children`, `has:parent` | actions with one |
+| `parent.title:lighting` | actions directly inside the menu titled Lighting |
+| `under.title:rendering` | actions anywhere below Rendering, however deep |
+| `-section:api`, `a OR b`, `(…)` | negation, alternatives, grouping |
+
+An empty box lists the open menu as usual; a query searches every level below it. Completions for field names and values appear under the box as you type, and a field it does not know is reported on the same line.
+
+Actions can carry properties of their own; pass fields that read them, built with catsearch's field constructors:
+
+```ts
+import type {INinjaAction} from 'ninja-keys';
+import {enumField, numberField} from 'catsearch';
+
+interface Doc extends INinjaAction {
+  kind: 'theme' | 'topic' | 'page';
+  updated: number;
+}
+
+ninja.searcher = catsearchSearcher<Doc>({
+  fields: [
+    enumField<Doc>({name: 'kind', get: (d) => d.kind}),
+    numberField<Doc>({name: 'updated', get: (d) => d.updated}),
+  ],
+});
+// kind:page updated:>=2026 under.title:rendering
+```
+
+`examples/docs-search` is a docs tree four levels deep searched both ways: `npm run example`.
+
 ## Themes
 
 Component supports a dark theme out-of-box. You just need to add a class.
@@ -305,6 +365,9 @@ It's supported by [all modern browsers](https://caniuse.com/mdn-css_selectors_pa
 | ninja-selected      | Selected action                                        |
 | ninja-input         | Input element                                          |
 | ninja-input-wrapper | Wrapper element around div, useful for advanced styles |
+| ninja-search-hint   | Line under the input holding a searcher's completions and notice |
+| ninja-suggestion    | One completion chip                                    |
+| ninja-notice        | A searcher's notice                                    |
 
 #### Example style using parts
 
