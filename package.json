@@ -24,6 +24,8 @@
     "analyze:watch": "cem analyze --litelement --globs \"src/**/*.ts\" --watch",
     "serve": "wds --root-dir=. --node-resolve --watch",
     "demo": "tsc && rollup -c --file docs/ninja-keys.bundled.js && wds --root-dir=. --open=./docs/ --node-resolve --watch",
+    "build:examples": "tsc -p tsconfig.examples.json",
+    "example": "npm run build && npm run build:examples && wds --node-resolve --open=/examples/docs-search/",
     "serve:prod": "MODE=prod npm run serve",
     "bundle": "npm run build && rollup -c --file dist/ninja-keys.bundled.js",
     "checksize": "rollup -c ; cat dist/ninja-keys.bundled.js | gzip -9 | wc -c ; rm dist/ninja-keys.bundled.js",

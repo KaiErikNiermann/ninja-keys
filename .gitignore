@@ -7,3 +7,6 @@ node_modules/
 .serena/
 .claude/
 CLAUDE.md
+# compiled example scripts (sources are the .ts next to them)
+/examples/**/*.js
+.playwright-mcp/

@@ -91,6 +91,7 @@ export default tseslint.config(
     ignores: [
       'node_modules/**',
       'docs/**',
+      'examples/**/*.js',
       'dist/**',
       'custom-elements.json',
       // local tooling state, not project source
