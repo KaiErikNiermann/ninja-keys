@@ -1,0 +1,143 @@
+@layer components {
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  /* Rendered Markdown and generated reference text. Spacing is the
+     container's: a heading opens more room above it than a paragraph. */
+  .prose {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-inline-size: var(--measure);
+  }
+
+  .prose h1 {
+    font-size: var(--text-2xl);
+    line-height: var(--text-2xl--line-height);
+  }
+
+  .prose h2 {
+    padding-block-start: var(--space-6);
+    font-size: var(--text-xl);
+    line-height: var(--text-xl--line-height);
+  }
+
+  .prose h3 {
+    padding-block-start: var(--space-3);
+    font-size: var(--text-lg);
+    line-height: var(--text-lg--line-height);
+  }
+
+  .prose :where(ul, ol) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    padding-inline-start: var(--space-6);
+  }
+
+  .prose :where(code, kbd) {
+    padding-block: var(--code-pad-block);
+    padding-inline: var(--code-pad-inline);
+    border-radius: var(--radius-sm);
+    background: var(--color-raised);
+    font-size: var(--code-size);
+  }
+
+  .prose kbd {
+    border: var(--hairline);
+  }
+
+  .prose blockquote {
+    padding-block: var(--space-3);
+    padding-inline: var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-accent-soft);
+  }
+
+  .prose table {
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+
+  .prose :where(th, td) {
+    padding-block: var(--space-1-5);
+    padding-inline: var(--space-3);
+    border-block-end: var(--hairline);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  .prose th {
+    font-family: var(--font-ui);
+    font-weight: 600;
+  }
+
+  /* Code blocks, in prose and wherever else a highlighted block is shown. */
+  .shiki {
+    overflow: auto;
+    padding-block: var(--space-3);
+    padding-inline: var(--space-4);
+    border: var(--hairline);
+    border-radius: var(--radius-md);
+    background: var(--color-code-bg);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+    tab-size: 2;
+  }
+
+  /* Undo the inline-code chip inside a block; comes after .prose code. */
+  .shiki code {
+    padding: 0;
+    background: none;
+    font-size: inherit;
+  }
+}
+
+/* The page: nav rail, article, on-this-page rail. The rails appear as the
+   space for them does, measured on the page container, not the viewport. */
+@layer components {
+  .shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+    max-inline-size: var(--shell-max);
+    margin-inline: auto;
+    padding-inline: var(--space-4);
+  }
+
+  .shell-rail {
+    position: sticky;
+    inset-block-start: var(--header-height);
+    display: none;
+    align-self: start;
+    max-block-size: calc(100vb - var(--header-height));
+    overflow: auto;
+    padding-block: var(--space-8);
+  }
+
+  @container (inline-size >= 48rem) {
+    .shell {
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    }
+
+    .shell-rail[data-rail='nav'] {
+      display: block;
+    }
+  }
+
+  @container (inline-size >= 72rem) {
+    .shell {
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(
+          --toc-width
+        );
+    }
+
+    .shell-rail[data-rail='toc'] {
+      display: block;
+    }
+  }
+}

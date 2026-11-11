@@ -1,0 +1,87 @@
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* No element carries outer spacing; containers own it with gap (PC-2). */
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul,
+  ol,
+  figure,
+  blockquote,
+  pre,
+  table {
+    margin: 0;
+  }
+
+  html {
+    scrollbar-gutter: stable;
+    scroll-padding-block-start: calc(var(--header-height) + var(--spacing) * 4);
+  }
+
+  body {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-ui);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: var(--color-accent);
+    text-underline-offset: var(--underline-offset);
+  }
+
+  code,
+  kbd,
+  pre {
+    font-family: var(--font-mono);
+    font-variant-ligatures: none;
+  }
+
+  :focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Shiki writes both themes' colours as variables; light-dark() picks by
+     the root's color-scheme, which the theme sets. */
+  .shiki,
+  .shiki span {
+    /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- shiki's per-token variables are the colours here */
+    color: light-dark(var(--shiki-light), var(--shiki-dark));
+  }
+
+  /* The custom element is empty until it is defined; its slotted footer
+     would otherwise sit in the page's flow for a moment. */
+  ninja-keys:not(:defined) {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}

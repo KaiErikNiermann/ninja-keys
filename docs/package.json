@@ -1,25 +1,69 @@
 {
-  "name": "demo",
-  "version": "1.0.0",
-  "description": "Ninja Keys Demo",
+  "name": "ninja-keys-docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The ninja-keys documentation site",
+  "type": "module",
   "scripts": {
-    "tailwind": "tailwindcss -i tailwind.css -o style.css",
-    "autoprefixer": "postcss style.css -u autoprefixer --no-map -o style.css",
-    "minify": "postcss style.css -u cssnano --no-map -o style.min.css",
-    "build": "npm run tailwind && npm run autoprefixer",
-    "production": "npm run tailwind && npm run autoprefixer && npm run minify"
+    "library": "npm --prefix .. run build && npm --prefix .. run analyze",
+    "api": "typedoc --options typedoc.config.mjs",
+    "predev": "npm run library && npm run api",
+    "dev": "vite dev",
+    "prebuild": "npm run library && npm run api",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "npm run api && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+    "lint": "prettier --check . && eslint . --max-warnings=0 && stylelint \"src/**/*.css\" && npm run lint:semgrep",
+    "lint:semgrep": "cd .lint && EIO_BACKEND=posix poetry run semgrep --config ../.semgrep --error --quiet ../src",
+    "format": "prettier --write .",
+    "verify": "npm run library && npm run check && npm run lint && npm run build"
   },
-  "keywords": [],
-  "author": {
-    "name": "Sergei Sleptosv"
+  "dependencies": {
+    "catsearch": "file:../../../python-tools/textual-catsearch/js",
+    "ninja-keys": "file:.."
   },
-  "license": "MIT",
   "devDependencies": {
-    "@tailwindcss/cli": "4.3.3",
-    "autoprefixer": "10.3.7",
-    "cssnano": "5.0.8",
-    "postcss-cli": "9.0.1",
-    "tailwindcss": "4.3.3"
+    "@eslint/css": "^2.0.1",
+    "@eslint/js": "^10.0.1",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@lucide/svelte": "^1.72.0",
+    "@shikijs/twoslash": "^4.6.0",
+    "@sveltejs/adapter-static": "^4.0.1",
+    "@sveltejs/kit": "^3.2.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^22.20.5",
+    "custom-elements-manifest": "^2.1.0",
+    "eslint": "^10.14.0",
+    "eslint-plugin-security": "^4.2.1",
+    "eslint-plugin-sonarjs": "^4.2.2",
+    "eslint-plugin-svelte": "^3.24.1",
+    "eslint-plugin-unicorn": "^79.0.0",
+    "github-slugger": "^2.0.0",
+    "globals": "^17.14.0",
+    "lucide-static": "^1.72.0",
+    "marked": "^18.2.0",
+    "mdsvex": "^0.12.8",
+    "prettier": "^3.9.10",
+    "prettier-plugin-svelte": "^4.1.1",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "rehype-slug": "^6.0.0",
+    "shiki": "^4.6.0",
+    "stylelint": "^18.0.0",
+    "stylelint-config-standard": "^41.0.0",
+    "stylelint-declaration-strict-value": "^1.13.0",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
+    "tailwind-csstree": "^0.4.2",
+    "tailwindcss": "^4.3.5",
+    "typedoc": "^0.28.20",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.2",
+    "vite": "^8.3.8"
   },
-  "private": true
+  "imports": {
+    "#lib/*": "./src/lib/*"
+  }
 }

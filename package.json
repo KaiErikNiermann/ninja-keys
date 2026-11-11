@@ -23,7 +23,7 @@
     "analyze": "cem analyze",
     "analyze:watch": "cem analyze --watch",
     "serve": "wds --root-dir=. --node-resolve --watch",
-    "demo": "tsc && rollup -c --file docs/ninja-keys.bundled.js && wds --root-dir=. --open=./docs/ --node-resolve --watch",
+    "docs": "npm --prefix docs run dev",
     "build:examples": "tsc -p tsconfig.examples.json",
     "example": "npm run build && npm run build:examples && wds --node-resolve --open=/examples/docs-search/",
     "serve:prod": "MODE=prod npm run serve",
@@ -34,7 +34,8 @@
     "prepublishOnly": "npm run clean && npm run build",
     "publish": "clean-publish",
     "publish-test": "rimraf package && clean-publish --without-publish --temp-dir package",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docs:build": "npm --prefix docs run build"
   },
   "keywords": [
     "web-components",

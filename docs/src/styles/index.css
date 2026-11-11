@@ -1,0 +1,18 @@
+/* The only stylesheet the site imports. Layer order is declared here, so
+   precedence is stated rather than won by selector weight (PC-5). */
+@layer theme, base, components, utilities, overrides;
+
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/400-italic.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+
+/* Twoslash's own sheet goes in the base layer, so the site's rules win. */
+@import '@shikijs/twoslash/style-rich.css' layer(base);
+@import './tokens.css';
+@import './base.css';
+@import './layout.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));

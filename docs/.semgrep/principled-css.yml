@@ -1,0 +1,226 @@
+# Principled CSS — semgrep rules for the laws that eslint/css and stylelint
+# cannot express, chiefly the ones that live in MARKUP rather than in .css files.
+#
+# ALWAYS run from a project-local Poetry venv:
+#     poetry add --group dev semgrep
+#     poetry run semgrep --config ~/.claude/skills/principled-css/rules/principled-css.yml
+# NEVER the bare system `semgrep` — the Arch `semgrep-bin` package has an
+# undeclared dependency and crashes on import.
+#
+# semgrep has no CSS parser (checked: supported languages are generic/html/ts/vue,
+# no css, no svelte), so .css and .svelte rules run in `generic` mode via
+# pattern-regex. That is still worth it over raw rg: the checks become named,
+# versioned, severity-tagged rules with SARIF/CI output and per-path scoping.
+#
+# Rule ids map 1:1 onto the laws in SKILL.md §1.
+
+rules:
+  # ------------------------------------------------------------------
+  # PC-1 — all arbitrariness lives in one token table
+  # ------------------------------------------------------------------
+  - id: pc1-raw-length-outside-tokens
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      PC-1: raw length literal outside the token layer. Every constant belongs in
+      tokens.css/@theme; reference it as var(--space-N). If no token fits, the scale
+      is wrong — add one rather than inlining a free parameter.
+    paths:
+      include: ["*.css"]
+      exclude: ["*tokens.css", "*theme.css", "*app.css", "*.min.css"]
+    pattern-regex: >-
+      (?m)^(?!\s*@)(?![^\n]*--[\w-]+\s*:)[^\n]*?(?:^|[{;])\s*[a-z][a-z-]*\s*:[^\n;]*?(?<![-\w#])(?!0\b)(?!1px\b)(?!2px\b)\d+(?:\.\d+)?(px|rem|em)\b
+
+  - id: pc1-raw-color-outside-tokens
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      PC-1: literal colour outside the token layer. One brand anchor in OKLCH plus
+      color-mix() derivations — not a hand-picked hex.
+    paths:
+      include: ["*.css"]
+      exclude: ["*tokens.css", "*theme.css", "*app.css", "*.min.css"]
+    pattern-regex: >-
+      (?m)^(?!\s*@)(?![^\n]*--[\w-]+\s*:)[^\n]*?(?:^|[{;])\s*[a-z][a-z-]*\s*:[^\n;]*?(#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?)\s*\()
+
+  - id: pc1-tailwind-arbitrary-value
+    languages: [generic]
+    severity: WARNING
+    message: >-
+      PC-1: Tailwind arbitrary value is an escape hatch, not a normal move — this is a
+      free parameter that escaped the token table. Add a @theme entry instead.
+    paths:
+      include: ["*.svelte", "*.html", "*.vue", "*.tsx", "*.jsx", "*.astro"]
+    pattern-regex: >-
+      \b[a-z][a-z-]*-\[(?:-?\d+(?:\.\d+)?(?:px|rem|em|%)|#[0-9a-fA-F]{3,8})\]
+
+  # ------------------------------------------------------------------
+  # PC-2 — containers own separation; children never set outer margin
+  # ------------------------------------------------------------------
+  - id: pc2-margin-undo-selector
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      PC-2: this selector exists to UNDO spacing, which means the separation fact was
+      stored on the wrong node. Put `gap` on the container and the exception disappears.
+    paths:
+      include: ["*.css", "*.svelte", "*.vue"]
+    patterns:
+      - pattern-regex: >-
+          (?m)^[^\n{]*(:last-child|:first-child|\*\s*\+\s*\*|\+\s*\*)[^\n{]*\{[^}]*margin
+  - id: pc2-tailwind-space-between
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      PC-2: space-x-*/space-y-* compiles to the owl selector `> * + *` and carries the
+      same last-child undo machinery — it also breaks under flex-wrap and reordering.
+      Use `flex flex-col gap-N` / `grid gap-N`.
+    paths:
+      include: ["*.svelte", "*.html", "*.vue", "*.tsx", "*.jsx", "*.astro", "*.ts"]
+    pattern-regex: >-
+      \bspace-[xy]-\d
+
+  # ------------------------------------------------------------------
+  # PC-3 — variance is closed, not open
+  # ------------------------------------------------------------------
+  - id: pc3-tailwind-important-modifier
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      PC-3/PC-4: an `!` modifier means the consumer is fighting a specificity race the
+      component did not anticipate. Extend the component's variant enumeration so
+      "override" becomes "select".
+    paths:
+      include: ["*.svelte", "*.html", "*.vue", "*.tsx", "*.jsx", "*.astro", "*.ts"]
+    pattern-regex: >-
+      (?<=["'\s])(![a-z][\w-]*(?:-[\w.\[\]/%#]+)?|[a-z][\w-]*-[\w.\[\]/%#]+!)(?=["'\s])
+
+  - id: pc3-classname-conditional-soup
+    languages: [typescript]
+    severity: WARNING
+    message: >-
+      PC-3: conditional className assembly is open variance — the effective style is
+      not readable at any single site. Enumerate with cva()/tailwind-variants and let
+      callers select a variant.
+    pattern-either:
+      - pattern: |
+          cn(..., $A && $B, ..., $C && $D, ...)
+      - pattern: |
+          clsx(..., $A && $B, ..., $C && $D, ...)
+      - pattern: |
+          twMerge(..., $A && $B, ..., $C && $D, ...)
+      - pattern: |
+          $F(..., $A ? $B : $C, ..., $D ? $E : $G, ...)
+
+  # ------------------------------------------------------------------
+  # PC-4 — !important and z-index escalation are architecture bug reports
+  # ------------------------------------------------------------------
+  - id: pc4-important
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      PC-4: every !important is a bug report about the architecture. Fix the boundary —
+      a cascade layer for order, a variant for the style.
+    paths:
+      include: ["*.css", "*.svelte", "*.vue"]
+      exclude: ["*.min.css"]
+    patterns:
+      - pattern-regex: "!\\s*important"
+      # prefers-reduced-motion overrides are the one sanctioned use.
+      - pattern-not-regex: "(animation-duration|transition-duration|scroll-behavior)[^;]*!\\s*important"
+
+  - id: pc4-z-index-escalation
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      PC-4: a three-digit z-index is an arms race, not a layer. Scope stacking with
+      `isolation: isolate` on a stacking root, or use the top layer (dialog/popover).
+    paths:
+      include: ["*.css", "*.svelte", "*.vue", "*.tsx", "*.jsx"]
+    pattern-regex: >-
+      z-index:\s*\d{3,}
+
+  # ------------------------------------------------------------------
+  # PC-5 — order is declared, not emergent
+  # ------------------------------------------------------------------
+  - id: pc5-specificity-escalation
+    languages: [generic]
+    severity: WARNING
+    message: >-
+      PC-5: three-deep descendant selector. This is winning a cascade fight by adding
+      selectors. Declare order with @layer and target a single class; if the rule is
+      really about available space, use a container query instead of ancestry.
+    paths:
+      include: ["*.css"]
+      exclude: ["*.min.css"]
+    pattern-regex: >-
+      (?m)^\s*[.#][\w-]+(\s+[.#][\w-]+){2,}[^,{]*\{
+
+  # ------------------------------------------------------------------
+  # PC-7 — layout states space, not viewport width
+  # ------------------------------------------------------------------
+  - id: pc7-breakpoint-ladder
+    languages: [generic]
+    severity: WARNING
+    message: >-
+      PC-7: the same utility tuned at three breakpoints is three magic numbers doing
+      what one function does. Collapse to a clamp() token or a @container query.
+    paths:
+      include: ["*.svelte", "*.html", "*.vue", "*.tsx", "*.jsx", "*.astro"]
+    pattern-regex: >-
+      \b(sm|md|lg|xl|2xl):([a-z]+)-[\w.]+\s+[^"'<>]*?\b(sm|md|lg|xl|2xl):\2-[\w.]+\s+[^"'<>]*?\b(sm|md|lg|xl|2xl):\2-
+
+  # ------------------------------------------------------------------
+  # PC-8 — logical properties by default
+  # ------------------------------------------------------------------
+  - id: pc8-physical-property
+    languages: [generic]
+    severity: WARNING
+    message: >-
+      PC-8: use logical properties — padding-inline-start / margin-block-end /
+      inset-inline-start / inline-size. Costs nothing and deletes the mirrored RTL
+      stylesheet before it is written.
+    paths:
+      include: ["*.css", "*.svelte", "*.vue"]
+      exclude: ["*.min.css"]
+    pattern-regex: >-
+      (?m)^(?!\s*@)[^\n]*?(?<![-\w])((padding|margin|border|inset|scroll-padding|scroll-margin)-(left|right|top|bottom)|(width|height|max-width|max-height|min-width|min-height|top|bottom|left|right|float|text-align\s*:\s*(left|right)))\s*:
+
+  - id: pc8-tailwind-physical-utility
+    languages: [generic]
+    severity: WARNING
+    message: >-
+      PC-8: use the logical Tailwind utilities — ms-*/me-*/ps-*/pe-*/start-*/end-*.
+    paths:
+      include: ["*.svelte", "*.html", "*.vue", "*.tsx", "*.jsx", "*.astro"]
+    pattern-regex: >-
+      (?<=["'\s])(ml|mr|pl|pr|left|right)-(\d|auto|px|\[)
+
+  # ------------------------------------------------------------------
+  # PC-9 — nothing single-engine is load-bearing
+  # ------------------------------------------------------------------
+  - id: pc9-single-engine-feature
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      PC-9: this feature ships in one engine only (see references/baseline.md Tier 4).
+      There is no correct fallback story — use the documented alternative. Chromium-only
+      targets (Electron, extension, kiosk) may nosem this rule with a justification.
+    paths:
+      include: ["*.css", "*.svelte", "*.vue"]
+      exclude: ["*.min.css"]
+    pattern-regex: >-
+      (?<![-\w])(if\s*\(\s*style\(|@function\s|@mixin\s|interpolate-size\s*:|calc-size\s*\(|corner-shape\s*:|reading-flow\s*:|masonry|item-pack\s*:|::picker\s*\(|paint\s*\(\s*--)
+
+  - id: pc9-unguarded-progressive-enhancement
+    languages: [generic]
+    severity: INFO
+    message: >-
+      PC-9: Tier-3 feature (not in every engine, or very recently landed). Confirm the
+      page is correct with this rule deleted, and guard with @supports if it is
+      load-bearing. See references/baseline.md.
+    paths:
+      include: ["*.css", "*.svelte", "*.vue"]
+      exclude: ["*.min.css"]
+    pattern-regex: >-
+      (?<![-\w])(text-box(-trim|-edge)?\s*:|animation-timeline\s*:|scroll-timeline|view-timeline|margin-trim\s*:|text-spacing-trim\s*:|initial-letter\s*:|background-clip\s*:\s*text|overscroll-behavior\s*:)
