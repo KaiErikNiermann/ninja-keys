@@ -1,0 +1,54 @@
+/* Three looks for the same palette, from its CSS properties and shadow
+   parts. Each is a class on <ninja-keys>. */
+
+/* Terminal: a monospace, green-on-black palette with square corners. */
+ninja-keys.terminal {
+  --ninja-font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  --ninja-modal-background: #0b0f0c;
+  --ninja-text-color: #b7f5c4;
+  --ninja-accent-color: #4ade80;
+  --ninja-secondary-text-color: #6b8f75;
+  --ninja-secondary-background-color: #16201a;
+  --ninja-selected-background: #142b1c;
+  --ninja-selected-text-color: #eafff0;
+  --ninja-placeholder-color: #4d6b56;
+  --ninja-group-text-color: #4ade80;
+  --ninja-footer-background: #0b0f0c;
+  --ninja-separate-border: 1px solid #1f3326;
+  --ninja-overflow-background: rgb(0 0 0 / 60%);
+  --ninja-key-border-radius: 0;
+  --ninja-modal-shadow: 0 0 0 1px #1f3326, 0 24px 60px rgb(0 0 0 / 60%);
+}
+
+ninja-keys.terminal::part(ninja-input)::placeholder {
+  font-style: italic;
+}
+
+/* Glass: a frosted panel over a blurred page, with rounded rows. */
+ninja-keys.glass {
+  --ninja-width: 34rem;
+  --ninja-top: 15%;
+  --ninja-backdrop-filter: blur(8px) saturate(140%);
+  --ninja-overflow-background: rgb(120 110 200 / 18%);
+  --ninja-modal-background: rgb(255 255 255 / 72%);
+  --ninja-selected-background: rgb(110 94 210 / 14%);
+  --ninja-footer-background: transparent;
+  --ninja-modal-shadow: 0 30px 80px rgb(40 30 90 / 35%);
+}
+
+ninja-keys.glass::part(actions-list) {
+  padding: 0.5rem;
+}
+
+ninja-keys.glass::part(ninja-action) {
+  border-radius: 0.5rem;
+  border-inline-start: none;
+}
+
+/* Compact: smaller type, a shorter list, and no footer (see the slot). */
+ninja-keys.compact {
+  --ninja-font-size: 14px;
+  --ninja-width: 28rem;
+  --ninja-actions-height: 12rem;
+  --ninja-icon-size: 1em;
+}

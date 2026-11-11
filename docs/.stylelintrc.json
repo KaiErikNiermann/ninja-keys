@@ -69,6 +69,12 @@
         "scale-unlimited/declaration-strict-value": null,
         "custom-property-pattern": null
       }
+    },
+    {
+      "files": ["src/lib/examples/*.css"],
+      "rules": {
+        "scale-unlimited/declaration-strict-value": null
+      }
     }
   ]
 }

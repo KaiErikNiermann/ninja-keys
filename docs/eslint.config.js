@@ -113,4 +113,11 @@ export default defineConfig([
       'css/font-family-fallbacks': 'error',
     },
   },
+  {
+    // The examples' stylesheet is CSS a reader copies into their own page,
+    // which has no layer order of its own to fit into.
+    files: ['src/lib/examples/*.css'],
+    language: 'css/css',
+    rules: {'css/use-layers': 'off'},
+  },
 ]);
