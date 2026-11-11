@@ -82,7 +82,10 @@
     --header-height: 3.5rem;
     --sidebar-width: 15rem;
     --toc-width: 13rem;
-    --menu-max-height: 70vh;
+
+    /* The compact nav drawer: wide enough for the longest page title, and
+       always leaving a strip of page to tap to close it. */
+    --drawer-width: min(18rem, 100vw - 3rem);
     --shell-max: 84rem;
     --card-min: 16rem;
     --icon-button: 1.75rem;

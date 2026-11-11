@@ -21,10 +21,26 @@
   };
   const THEME_ICON = {light: 'sun', dark: 'moon', system: 'system'} as const;
 
-  let menu: HTMLDetailsElement | undefined = $state();
+  // Below the wide layout the sidebar is a drawer under the header, toggled
+  // from the menu button. Leaving the page closes it, and so does following a
+  // link in it: a link to the page already open navigates nowhere.
+  let isMenuOpen = $state(false);
+  let toggle: HTMLButtonElement | undefined = $state();
   afterNavigate(() => {
-    if (menu) menu.open = false;
+    isMenuOpen = false;
   });
+
+  function closeMenu(event: KeyboardEvent) {
+    if (!isMenuOpen || event.key !== 'Escape') return;
+    isMenuOpen = false;
+    toggle?.focus();
+  }
+
+  function followLink(event: MouseEvent) {
+    if (event.target instanceof Element && event.target.closest('a')) {
+      isMenuOpen = false;
+    }
+  }
 
   // The key the palette opens with, as this platform writes it. Read after
   // hydration: the prerendered page cannot know the platform.
@@ -34,30 +50,54 @@
   });
 </script>
 
+<svelte:window onkeydown={closeMenu} />
+
 <header
   class="sticky top-0 z-10 flex h-(--header-height) items-center gap-3 border-b border-edge bg-surface px-4"
 >
-  <details bind:this={menu} class="relative @3xl:hidden">
-    <summary
-      class="grid size-8 cursor-pointer list-none place-items-center rounded-sm text-ink-dim hover:bg-raised"
-      aria-label="Menu"
-      title="Menu"
-    >
-      <Icon name="menu" />
-    </summary>
-    <div
-      class="absolute top-full mt-2 max-h-(--menu-max-height) w-(--sidebar-width) overflow-y-auto rounded-md border border-edge bg-surface p-3 shadow-(--shadow-pop)"
-    >
-      <NavList />
+  <button
+    bind:this={toggle}
+    type="button"
+    class="grid size-8 shrink-0 place-items-center rounded-sm text-ink-dim hover:bg-raised hover:text-ink @3xl:hidden"
+    aria-label={isMenuOpen ? 'Close menu' : 'Menu'}
+    title={isMenuOpen ? 'Close menu' : 'Menu'}
+    aria-expanded={isMenuOpen}
+    aria-controls="nav-drawer"
+    onclick={() => (isMenuOpen = !isMenuOpen)}
+  >
+    <Icon name={isMenuOpen ? 'close' : 'menu'} />
+  </button>
+
+  {#if isMenuOpen}
+    <div class="@3xl:hidden">
+      <button
+        type="button"
+        class="fixed inset-x-0 top-(--header-height) bottom-0 cursor-default bg-surface/80 backdrop-blur-sm"
+        aria-label="Close menu"
+        tabindex="-1"
+        onclick={() => (isMenuOpen = false)}
+      ></button>
+      <!-- A click that reaches an <a> inside closes the drawer; the links
+           themselves are plain, so keyboard activation sends a click too. -->
+      <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+      <div
+        id="nav-drawer"
+        class="fixed start-0 top-(--header-height) bottom-0 w-(--drawer-width) overflow-y-auto overscroll-contain border-e border-edge bg-surface p-4"
+        onclick={followLink}
+      >
+        <NavList />
+      </div>
     </div>
-  </details>
+  {/if}
 
   <a
     href={resolve('/')}
     class="flex shrink-0 items-center gap-2 font-ui text-base font-semibold whitespace-nowrap text-ink no-underline"
+    aria-label="ninja-keys"
   >
     <img src={asset('favicon.svg')} alt="" class="size-6" />
-    ninja-keys
+    <!-- With the nav in a drawer, the logo alone leaves room for search. -->
+    <span class="hidden @3xl:inline" aria-hidden="true">ninja-keys</span>
   </a>
 
   <button
@@ -75,7 +115,7 @@
 
   <button
     type="button"
-    class="grid size-8 place-items-center rounded-sm text-ink-dim hover:bg-raised hover:text-ink"
+    class="grid size-8 shrink-0 place-items-center rounded-sm text-ink-dim hover:bg-raised hover:text-ink"
     aria-label={THEME_LABEL[theme.choice]}
     title={THEME_LABEL[theme.choice]}
     onclick={() => theme.next()}
@@ -85,6 +125,10 @@
 
   <a
     href="https://github.com/KaiErikNiermann/ninja-keys"
-    class="font-ui text-sm text-ink-dim no-underline hover:text-ink">GitHub</a
+    class="grid size-8 shrink-0 place-items-center rounded-sm text-ink-dim hover:bg-raised hover:text-ink"
+    aria-label="GitHub repository"
+    title="GitHub repository"
   >
+    <Icon name="github" />
+  </a>
 </header>
