@@ -13,7 +13,7 @@ The source is about 1,800 lines of TypeScript in `src/`: four Lit elements and t
 | `ninja-action.ts` | one row: icon, title, hotkey badges                                                        |
 | `ninja-footer.ts` | the default footer                                                                         |
 | `searcher.ts`     | the `Searcher` contract, `defaultSearcher`, `groupBySection`                               |
-| `catsearch.ts`    | `@appulsauce/ninja-keys/catsearch`                                                                     |
+| `catsearch.ts`    | `@appulsauce/ninja-keys/catsearch`                                                         |
 | `base-styles.ts`  | the shared styles and the `--ninja-*` defaults                                             |
 
 ### Commands
@@ -24,12 +24,16 @@ Run from the repository root.
 | ----------------- | ---------------------------------------------------------------------------------------------- |
 | `pnpm run build`  | compiles `src/` to `dist/` with `tsc`                                                          |
 | `pnpm test`       | runs the tests in a headless browser (@web/test-runner); build first, they run against `dist/` |
-| `pnpm run lint`   | lit-analyzer and ESLint (typescript-eslint, sonarjs, unicorn, security)                        |
+| `pnpm run lint`   | lit-analyzer, ESLint (typescript-eslint, sonarjs, unicorn, security), and the version check   |
 | `pnpm run analyze` | regenerates `custom-elements.json` from the source                                             |
 | `pnpm run format` | Prettier                                                                                       |
 | `pnpm run docs`   | builds the library and starts this site's dev server                                           |
 
-The husky pre-push hook runs build, lint and test, then checks, lints and builds the docs site, whose code blocks compile against the library.
+The husky pre-push hook runs build, lint and test, then checks, lints and builds the docs site, whose code blocks compile against the library. `just` lists the same commands as recipes, plus the versioning and release ones.
+
+### Versions
+
+The version is in `package.json` and in every pinned `@appulsauce/ninja-keys@…` URL in the README and on these pages. `just version` lists them all, `just bump minor` or `just set-version 2.0.0` rewrites every one at once, and `just version-undo` reverts the last rewrite; `--dry-run` previews any of them. `pnpm run lint` fails when they disagree.
 
 ### Documenting a change
 

@@ -28,15 +28,17 @@ ninja-keys is a framework-agnostic **Web Components** library (~1100 lines of Ty
 
 ### Source Structure (`src/`)
 
-Four Lit custom elements + shared styles:
+Four Lit custom elements, the search layer and shared styles:
 
 - **`ninja-keys.ts`** — `<ninja-keys>` main component. Central orchestrator: manages modal visibility, hotkey registration/cleanup (via hotkeys-js), action data flattening (nested → flat), search filtering, keyboard navigation (up/down/enter/esc/backspace), and breadcrumb state for nested menus. Emits `change` and `selected` events.
 - **`ninja-header.ts`** — `<ninja-header>` search input + breadcrumb navigation. Emits `change` (search input), `setParent` (breadcrumb click), and `close` events.
 - **`ninja-action.ts`** — `<ninja-action>` individual action/menu item. Renders icon (Material Icons font or custom SVG), title, and hotkey badges. Has `ensureInView()` for scroll management. Emits `actionsSelected`.
 - **`ninja-footer.ts`** — `<ninja-footer>` keyboard hint bar with slottable content.
+- **`searcher.ts`** — the `Searcher` contract (`searcher` property), `defaultSearcher` (regex over title + keywords) and `groupBySection`.
+- **`catsearch.ts`** — `catsearchSearcher()`, the field query searcher built on the optional `catsearch` peer dependency (exported as `./catsearch`).
 - **`base-styles.ts`** — Shared CSS (Lit `css` tagged template) with CSS custom properties for theming and modal animations.
 - **`interfaces/ininja-action.ts`** — `INinjaAction` interface: `id`, `title`, optional `hotkey`, `handler`, `mdIcon`, `icon`, `parent`, `keywords`, `children`, `section`.
-- **`ninja-keys.test.ts`** — Tests using @open-wc/testing + @web/test-runner.
+- **`ninja-keys.test.ts`**, **`catsearch.test.ts`** — Tests using @open-wc/testing + @web/test-runner.
 
 ### Data Flow
 
@@ -50,9 +52,10 @@ TypeScript → `dist/*.js` (ESM, with `.d.ts` declarations) → Rollup bundles t
 
 - `.` → `dist/ninja-keys.js` (main component)
 - `./ninja-header` → `dist/ninja-header.js` (header component)
+- `./catsearch` → `dist/catsearch.js` (field query searcher; needs `catsearch` installed)
 - ESM only (`"type": "module"`)
 
-Package manager: pnpm (workspace: the library at the root, the docs site in `docs/`).
+Published as `@appulsauce/ninja-keys` (fork of `ssleptsov/ninja-keys`; the tag stays `<ninja-keys>`). `files` limits the tarball to `dist/` and `custom-elements.json`. Package manager: pnpm (workspace: the library at the root, the docs site in `docs/`).
 
 ## Code Style
 
@@ -63,6 +66,6 @@ Package manager: pnpm (workspace: the library at the root, the docs site in `doc
 
 ## CI & Hooks
 
-- **GitHub Actions**: `lint.yml` and `test.yml` run on push/PR to main
+- **GitHub Actions**: `lint.yml` and `test.yml` run on push/PR to main; `docs.yml` builds the docs site and deploys it to GitHub Pages from main
 - **Dependabot**: weekly npm + GitHub Actions updates with grouped PRs
-- **Husky pre-push**: runs build + lint + test before push
+- **Husky pre-push**: runs build + lint + test, then the docs check, lint and build
