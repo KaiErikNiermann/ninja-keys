@@ -17,6 +17,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `pnpm run docs` | Build the library and start the docs site dev server (`docs/`, SvelteKit) |
 | `pnpm --dir docs run verify` | Docs: build library, type-check, lint (prettier/eslint/stylelint/semgrep), build site |
 | `pnpm run checksize` | Check minified gzip size of bundle |
+| `just` | Lists the Justfile recipes: the same commands plus versioning and release |
+| `just version` / `just bump <kind>` / `just set-version X.Y.Z` / `just version-undo` | Show or rewrite the version in every place it is written (`scripts/version.ts`; `--dry-run` previews). `pnpm run lint` fails if they disagree |
 
 Tests require `pnpm run build` first (they run against `dist/`).
 
