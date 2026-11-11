@@ -1,0 +1,20 @@
+/* Glass: a frosted panel over a blurred page, with rounded rows. */
+ninja-keys.glass {
+  --ninja-width: 34rem;
+  --ninja-top: 15%;
+  --ninja-backdrop-filter: blur(8px) saturate(140%);
+  --ninja-overflow-background: rgb(120 110 200 / 18%);
+  --ninja-modal-background: rgb(255 255 255 / 72%);
+  --ninja-selected-background: rgb(110 94 210 / 14%);
+  --ninja-footer-background: transparent;
+  --ninja-modal-shadow: 0 30px 80px rgb(40 30 90 / 35%);
+}
+
+ninja-keys.glass::part(actions-list) {
+  padding: 0.5rem;
+}
+
+ninja-keys.glass::part(ninja-action) {
+  border-radius: 0.5rem;
+  border-inline-start: none;
+}

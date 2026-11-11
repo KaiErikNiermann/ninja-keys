@@ -13,6 +13,13 @@
     page: HTMLElement
   ) => void;
 
+  /** A file shown under the demo: its name and highlighted source. */
+  export interface Source {
+    readonly file: string;
+    /** From `import html from '...?highlight'`. */
+    readonly html: string;
+  }
+
   export interface Query {
     readonly search: string;
     readonly note: string;
@@ -28,10 +35,8 @@
   interface Props {
     /** The example module's default export. */
     setup: Setup;
-    /** The module's source, highlighted (`import code from '...?highlight'`). */
-    code?: string;
-    /** File name shown over the source. */
-    file?: string;
+    /** The files that make this demo, shown under it in order. */
+    sources?: readonly Source[];
     /** Queries to run, each a button that opens the palette with it. */
     queries?: readonly Query[];
     /** Classes for the element; `dark` follows the site unless `themed`. */
@@ -44,8 +49,7 @@
 
   let {
     setup,
-    code = '',
-    file = '',
+    sources = [],
     queries = [],
     themed = '',
     placeholder = 'Type a command or search...',
@@ -109,7 +113,7 @@
     {/if}
 
     <output
-      class="flex min-h-6 flex-col font-mono text-xs text-ink-dim"
+      class="flex min-h-6 flex-col font-mono text-sm text-ink-dim"
       aria-live="polite"
     >
       {#each log as line, index (index)}
@@ -120,17 +124,17 @@
     </output>
   </div>
 
-  {#if code}
+  {#each sources as source (source.file)}
     <figcaption
       class="border-t border-edge px-4 py-1.5 font-mono text-xs text-ink-dim"
     >
-      {file}
+      {source.file}
     </figcaption>
     <div class="demo-code">
       <!-- eslint-disable-next-line svelte/no-at-html-tags -- the example's own source, highlighted at build time -->
-      {@html code}
+      {@html source.html}
     </div>
-  {/if}
+  {/each}
 
   <ninja-keys bind:this={ninja} class={classes} openHotkey="" {placeholder}
   ></ninja-keys>

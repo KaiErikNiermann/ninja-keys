@@ -10,8 +10,7 @@ The default search keeps the order of `data`. With many similar titles, the best
 
 <Demo
 {setup}
-{code}
-file="ranked-searcher.ts"
+sources={[{file: 'ranked-searcher.ts', html: code}]}
 queries={[
 {search: 'pa', note: 'Paste and Paste and match style first; Copy as path after'},
 {search: 're', note: 'Reopen first, then Open recent (a word starts with it)'},

@@ -10,8 +10,7 @@ A documentation tree, three levels deep (area, topic, page), where each page car
 
 <Demo
 {setup}
-{code}
-file="query-cookbook.ts"
+sources={[{file: 'query-cookbook.ts', html: code}]}
 placeholder="Try kind:, tag:, updated:, is:"
 queries={[
 {search: 'shadow', note: 'plain words still search titles and keywords'},

@@ -8,7 +8,7 @@
 
 Menus three levels deep, written as a tree. Choosing **Settings…** opens its menu; the breadcrumb above the input names where you are, and <kbd>Backspace</kbd> on an empty search goes back up. A search at the top level still finds every level: type `cozy`.
 
-<Demo {setup} {code} file="nested.ts">
+<Demo {setup} sources={[{file: 'nested.ts', html: code}]}>
 <button type="button" data-open="Theme" class="h-8 rounded-md border border-edge bg-surface px-3 font-ui text-sm hover:border-accent" >Open the Theme menu</button>
 </Demo>
 

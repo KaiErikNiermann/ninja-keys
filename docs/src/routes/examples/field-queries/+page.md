@@ -10,8 +10,7 @@ An editor's commands searched with `catsearchSearcher()` and no configuration. P
 
 <Demo
 {setup}
-{code}
-file="field-queries.ts"
+sources={[{file: 'field-queries.ts', html: code}]}
 placeholder="Search, or try section:, has:, under.title:"
 queries={[
 {search: 'remote', note: 'plain words: titles and keywords, every level'},

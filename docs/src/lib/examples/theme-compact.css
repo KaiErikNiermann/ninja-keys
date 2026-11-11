@@ -1,0 +1,7 @@
+/* Compact: smaller type, a shorter list, and no footer (see the slot). */
+ninja-keys.compact {
+  --ninja-font-size: 15px; /* rows are 0.8125em of this: about 12px */
+  --ninja-width: 28rem;
+  --ninja-actions-height: 12rem;
+  --ninja-icon-size: 1em;
+}

@@ -12,6 +12,6 @@ Six actions in three sections, each with a Material icon; three have hotkeys. Op
 - pressing <kbd>Enter</kbd> on Zoom in: the palette stays open, because its handler returns `{keepOpen: true}`;
 - closing the palette and pressing <kbd>Alt</kbd> <kbd>N</kbd>: an action's hotkey works without the palette.
 
-<Demo {setup} {code} file="basic.ts" />
+<Demo {setup} sources={[{file: 'basic.ts', html: code}]} />
 
 This is the whole of the [Quickstart](/docs/quickstart). The fields are described in [Actions and menus](/docs/guide/actions).

@@ -1,0 +1,22 @@
+/* Terminal: a monospace, green-on-black palette with square corners. */
+ninja-keys.terminal {
+  --ninja-font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  --ninja-modal-background: #0b0f0c;
+  --ninja-text-color: #b7f5c4;
+  --ninja-accent-color: #4ade80;
+  --ninja-secondary-text-color: #6b8f75;
+  --ninja-secondary-background-color: #16201a;
+  --ninja-selected-background: #142b1c;
+  --ninja-selected-text-color: #eafff0;
+  --ninja-placeholder-color: #4d6b56;
+  --ninja-group-text-color: #4ade80;
+  --ninja-footer-background: #0b0f0c;
+  --ninja-separate-border: 1px solid #1f3326;
+  --ninja-overflow-background: rgb(0 0 0 / 60%);
+  --ninja-key-border-radius: 0;
+  --ninja-modal-shadow: 0 0 0 1px #1f3326, 0 24px 60px rgb(0 0 0 / 60%);
+}
+
+ninja-keys.terminal::part(ninja-input)::placeholder {
+  font-style: italic;
+}

@@ -8,7 +8,7 @@
 
 The palette as part of a page's own UI rather than a hidden shortcut. The box below is an ordinary `<input>` on the page: typing in it opens the palette with what you typed, so no key is lost. The second button runs the best match for `rep` without showing a choice. Every event the element fires is reported under the buttons.
 
-<Demo {setup} {code} file="page-driven.ts">
+<Demo {setup} sources={[{file: 'page-driven.ts', html: code}]}>
 <input name="jump" type="search" placeholder="Jump to…" autocomplete="off" class="h-8 w-48 rounded-md border border-edge bg-surface px-2 font-ui text-sm" />
 <button type="button" name="lucky" class="h-8 rounded-md border border-edge bg-surface px-3 font-ui text-sm hover:border-accent" >Run the best match for “rep”</button>
 </Demo>
