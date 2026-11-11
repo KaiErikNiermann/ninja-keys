@@ -5,6 +5,13 @@
     gap: var(--space-4);
   }
 
+  /* As many columns as fit at a readable width; no breakpoints. */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+    gap: var(--space-3);
+  }
+
   /* Rendered Markdown and generated reference text. Spacing is the
      container's: a heading opens more room above it than a paragraph. */
   .prose {

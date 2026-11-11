@@ -11,6 +11,7 @@
   import Toc from '#lib/components/Toc.svelte';
   import TwoslashPopups from '#lib/components/TwoslashPopups.svelte';
   import {pageAt} from '#lib/nav.ts';
+  import {sitePalette} from '#lib/search/control.ts';
   import {theme} from '#lib/theme.svelte.ts';
 
   let {children}: {children: Snippet} = $props();
@@ -22,6 +23,9 @@
   const current = $derived(pageAt(route));
 
   $effect(() => theme.start());
+  $effect(() => {
+    sitePalette.open = (search) => void palette?.open(search);
+  });
   $effect(() => {
     document.documentElement.dataset['theme'] = theme.dark ? 'dark' : 'light';
   });

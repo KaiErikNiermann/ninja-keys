@@ -43,10 +43,10 @@
     if (element && !ready) ready = load(element);
   });
 
-  /** Open the palette, once it has loaded. */
-  export async function open(): Promise<void> {
+  /** Open the palette, once it has loaded, optionally with a search typed. */
+  export async function open(search?: string): Promise<void> {
     await ready;
-    element?.open();
+    element?.open(search === undefined ? {} : {search});
   }
 </script>
 

@@ -54,7 +54,7 @@
 
   <a
     href={resolve('/')}
-    class="flex items-center gap-2 font-ui text-base font-semibold text-ink no-underline"
+    class="flex shrink-0 items-center gap-2 font-ui text-base font-semibold whitespace-nowrap text-ink no-underline"
   >
     <img src={asset('favicon.svg')} alt="" class="size-6" />
     ninja-keys
@@ -62,13 +62,13 @@
 
   <button
     type="button"
-    class="ms-auto flex h-8 min-w-0 items-center gap-2 rounded-md border border-edge bg-raised ps-2.5 pe-1.5 font-ui text-sm text-ink-dim hover:text-ink @xl:w-64"
+    class="ms-auto flex h-8 min-w-0 flex-1 items-center gap-2 rounded-md border border-edge bg-raised ps-2.5 pe-1.5 font-ui text-sm text-ink-dim hover:text-ink @xl:w-64 @xl:flex-none"
     onclick={onsearch}
   >
     <Icon name="search" size={14} />
     <span class="truncate">Search</span>
     <kbd
-      class="ms-auto rounded-sm border border-edge bg-surface px-1.5 font-mono text-xs"
+      class="ms-auto hidden rounded-sm border border-edge bg-surface px-1.5 font-mono text-xs whitespace-nowrap @xl:inline"
       >{isMac ? '⌘' : 'Ctrl'} K</kbd
     >
   </button>
