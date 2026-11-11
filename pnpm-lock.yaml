@@ -43,8 +43,8 @@ importers:
         specifier: ^0.20.2
         version: 0.20.2
       catsearch:
-        specifier: file:../../python-tools/textual-catsearch/js
-        version: file:../../python-tools/textual-catsearch/js
+        specifier: ^0.1.0
+        version: 0.1.0
       concurrently:
         specifier: ^10.0.3
         version: 10.0.4
@@ -91,26 +91,14 @@ importers:
         specifier: ^8.55.0
         version: 8.55.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.9.3)
 
-  .scratch/consumer:
-    dependencies:
-      '@appulsauce/ninja-keys':
-        specifier: file:../appulsauce-ninja-keys-1.3.0.tgz
-        version: file:.scratch/appulsauce-ninja-keys-1.3.0.tgz(catsearch@..+python-tools+textual-catsearch+js)
-      catsearch:
-        specifier: link:/home/appulsauce/Projects/python-tools/textual-catsearch/js
-        version: link:../../../../python-tools/textual-catsearch/js
-      typescript:
-        specifier: ~5.9.3
-        version: 5.9.3
-
   docs:
     dependencies:
       '@appulsauce/ninja-keys':
         specifier: workspace:*
         version: link:..
       catsearch:
-        specifier: file:../../../python-tools/textual-catsearch/js
-        version: file:../../python-tools/textual-catsearch/js
+        specifier: ^0.1.0
+        version: 0.1.0
     devDependencies:
       '@eslint/css':
         specifier: ^2.0.1
@@ -240,15 +228,6 @@ importers:
         version: 8.3.8(@types/node@22.20.5)(jiti@2.7.0)(terser@5.46.0)(yaml@2.9.1)
 
 packages:
-
-  '@appulsauce/ninja-keys@file:.scratch/appulsauce-ninja-keys-1.3.0.tgz':
-    resolution: {integrity: sha512-a5XcxCLaIPul7S0OqDMQzaBtmvbejDuxMNVKvz1Ve8rTCGal9jVTaMvvkAou7jKnTDFEYJMSzHS2+U6oGnq4Tg==, tarball: file:.scratch/appulsauce-ninja-keys-1.3.0.tgz}
-    version: 1.3.0
-    peerDependencies:
-      catsearch: ^0.1.0
-    peerDependenciesMeta:
-      catsearch:
-        optional: true
 
   '@babel/code-frame@7.29.0':
     resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
@@ -1792,8 +1771,8 @@ packages:
   caniuse-lite@1.0.30001826:
     resolution: {integrity: sha512-wTB+9tIbLro/BCXwLuNV1meHE4L9dS6dArMDwgYfNBPMYScqClHyGunhkCSDtHhe/69Xl0sHlKgBVZ+fNsYtWA==}
 
-  catsearch@file:../../python-tools/textual-catsearch/js:
-    resolution: {directory: ../../python-tools/textual-catsearch/js, type: directory}
+  catsearch@0.1.0:
+    resolution: {integrity: sha512-Tn3bNJ5IHEiWVsLnlCoD31kJJFe6ATTUsWr9XBWSx7ooOXgtYBgxdBy6coBkLr6s32VT+r+DbgVrVIYm9WAlLg==}
     engines: {node: '>=22.18'}
 
   ccount@2.0.1:
@@ -4505,13 +4484,6 @@ packages:
 
 snapshots:
 
-  '@appulsauce/ninja-keys@file:.scratch/appulsauce-ninja-keys-1.3.0.tgz(catsearch@..+python-tools+textual-catsearch+js)':
-    dependencies:
-      hotkeys-js: 3.13.15
-      lit: 3.3.2
-    optionalDependencies:
-      catsearch: link:../../python-tools/textual-catsearch/js
-
   '@babel/code-frame@7.29.0':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
@@ -6090,7 +6062,7 @@ snapshots:
 
   caniuse-lite@1.0.30001826: {}
 
-  catsearch@file:../../python-tools/textual-catsearch/js: {}
+  catsearch@0.1.0: {}
 
   ccount@2.0.1: {}
 

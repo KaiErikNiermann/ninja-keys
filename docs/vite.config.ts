@@ -88,8 +88,9 @@ function highlightImports(): Plugin {
   };
 }
 
-// The library and catsearch are linked from outside this directory; the dev
-// server only serves files under the roots it is told about.
+// The library (a workspace link) and catsearch (in the workspace root's
+// store) resolve outside this directory; the dev server only serves files
+// under the roots it is told about.
 const linked = await Promise.all(
   ['node_modules/@appulsauce/ninja-keys', 'node_modules/catsearch'].map((dir) =>
     realpath(path.join(root, dir))

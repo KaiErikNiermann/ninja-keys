@@ -19,7 +19,7 @@
     "verify": "pnpm run library && pnpm run check && pnpm run lint && pnpm run build"
   },
   "dependencies": {
-    "catsearch": "file:../../../python-tools/textual-catsearch/js",
+    "catsearch": "^0.1.0",
     "@appulsauce/ninja-keys": "workspace:*"
   },
   "devDependencies": {
