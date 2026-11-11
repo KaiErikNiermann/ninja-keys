@@ -73,6 +73,13 @@
     background: var(--color-accent-soft);
   }
 
+  /* Wraps each Markdown table (vite.config.ts): a wide one scrolls here. It
+     never overflows vertically, so `auto` on both axes means sideways. */
+  .prose .table-scroll {
+    max-inline-size: 100%;
+    overflow: auto;
+  }
+
   .prose table {
     border-collapse: collapse;
     font-size: var(--text-sm);

@@ -46,13 +46,33 @@ function prefixLinks(tree: Root): void {
 
 const rehypeBaseLinks = () => prefixLinks;
 
+/**
+ * Puts each table in a box that scrolls sideways on its own, so a table
+ * wider than a phone does not make the whole page scroll. The table keeps
+ * `display: table` (and its semantics); only the wrapper scrolls.
+ */
+function wrapTables(tree: Root): void {
+  visit(tree, 'element', (node, index, parent) => {
+    if (!parent || index === undefined || node.tagName !== 'table') return;
+    parent.children[index] = {
+      type: 'element',
+      tagName: 'div',
+      properties: {className: ['table-scroll']},
+      children: [node],
+    };
+    return 'skip';
+  });
+}
+
+const rehypeScrollTables = () => wrapTables;
+
 const mdsvexOptions: MdsvexOptions = {
   extensions: ['.md'],
   highlight: {
     highlighter: async (code, lang, meta) =>
       `{@html \`${escapeSvelte(await highlight(code, lang, meta ? {meta} : {}))}\`}`,
   },
-  rehypePlugins: [rehypeSlug, rehypeBaseLinks],
+  rehypePlugins: [rehypeSlug, rehypeBaseLinks, rehypeScrollTables],
 };
 
 const QUERY = '?highlight';
