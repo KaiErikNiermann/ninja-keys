@@ -60,7 +60,8 @@ function commentHtml(comment: JSONOutput.Comment | undefined): string {
   return markdown([commentText(comment), ...examples].join('\n\n'));
 }
 
-const code = async (source: string) => highlight(source, 'ts', 'notwoslash');
+const code = async (source: string) =>
+  highlight(source, 'ts', {meta: 'notwoslash', copy: false});
 
 /* ---------------------------------------------------------------- element */
 

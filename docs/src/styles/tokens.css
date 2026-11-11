@@ -33,6 +33,7 @@
   );
   --color-warn: light-dark(oklch(55% 0.13 70deg), oklch(80% 0.12 80deg));
   --color-warn-soft: color-mix(in oklch, var(--color-warn) 12%, transparent);
+  --color-danger: light-dark(oklch(55% 0.19 25deg), oklch(72% 0.16 25deg));
 
   /* Long-reading profile: 16px body, ratio ~1.25, six sizes. */
   --text-xs: 0.75rem;
@@ -84,6 +85,8 @@
     --menu-max-height: 70vh;
     --shell-max: 84rem;
     --card-min: 16rem;
+    --icon-button: 1.75rem;
+    --icon-size: 0.875rem;
     --hairline: 1px solid var(--color-edge);
     --focus-ring: 2px solid var(--color-accent);
     --code-size: 0.875em;

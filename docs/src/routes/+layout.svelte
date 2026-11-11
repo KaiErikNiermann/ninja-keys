@@ -9,6 +9,7 @@
   import Pager from '#lib/components/Pager.svelte';
   import SearchPalette from '#lib/components/SearchPalette.svelte';
   import Toc from '#lib/components/Toc.svelte';
+  import CodeCopy from '#lib/components/CodeCopy.svelte';
   import TwoslashPopups from '#lib/components/TwoslashPopups.svelte';
   import {pageAt} from '#lib/nav.ts';
   import {sitePalette} from '#lib/search/control.ts';
@@ -57,3 +58,4 @@
 
 <SearchPalette bind:this={palette} dark={theme.dark} />
 <TwoslashPopups />
+<CodeCopy />

@@ -45,6 +45,15 @@
     padding-inline-start: var(--space-6);
   }
 
+  /* Tailwind's reset removes list markers; prose lists want them back. */
+  .prose ul {
+    list-style: disc;
+  }
+
+  .prose ol {
+    list-style: decimal;
+  }
+
   .prose :where(code, kbd) {
     padding-block: var(--code-pad-block);
     padding-inline: var(--code-pad-inline);
@@ -94,6 +103,61 @@
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
     tab-size: 2;
+  }
+
+  /* A highlighted block with its copy button in the corner. */
+  .code-block {
+    position: relative;
+  }
+
+  .code-copy {
+    position: absolute;
+    inset-block-start: var(--space-2);
+    inset-inline-end: var(--space-2);
+    display: grid;
+    place-items: center;
+    inline-size: var(--icon-button);
+    block-size: var(--icon-button);
+    border: var(--hairline);
+    border-radius: var(--radius-sm);
+    background: var(--color-raised);
+    color: var(--color-ink-dim);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+
+  .code-copy:hover {
+    color: var(--color-ink);
+  }
+
+  .code-copy:focus-visible,
+  .code-copy[data-state] {
+    opacity: 1;
+  }
+
+  .code-block:hover .code-copy {
+    opacity: 1;
+  }
+
+  .code-copy svg {
+    inline-size: var(--icon-size);
+    block-size: var(--icon-size);
+  }
+
+  /* One glyph per state: idle, done (a check), failed (a cross). */
+  .code-copy [data-glyph]:not([data-glyph='idle']),
+  .code-copy[data-state] [data-glyph='idle'] {
+    display: none;
+  }
+
+  .code-copy[data-state='done'] [data-glyph='done'],
+  .code-copy[data-state='failed'] [data-glyph='failed'] {
+    display: block;
+  }
+
+  .code-copy[data-state='failed'] {
+    color: var(--color-danger);
   }
 
   /* Undo the inline-code chip inside a block; comes after .prose code. */

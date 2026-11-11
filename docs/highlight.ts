@@ -11,6 +11,10 @@
  * sketch with `...`) opts out with `notwoslash` after the language.
  */
 
+import type {ElementContent} from 'hast';
+import {fromHtml} from 'hast-util-from-html';
+import {Check, Copy, X} from 'lucide-static';
+import {marked} from 'marked';
 import {createHighlighter, type Highlighter} from 'shiki';
 import {transformerTwoslash} from '@shikijs/twoslash';
 import ts from 'typescript';
@@ -49,6 +53,13 @@ export function languageOf(name: string | null | undefined): Language {
   return isLanguage(resolved) ? resolved : 'text';
 }
 
+/** Markdown as hast nodes, for the doc comments in hover popups. */
+function markdownNodes(html: string): ElementContent[] {
+  return fromHtml(html, {fragment: true}).children.filter(
+    (node): node is ElementContent => node.type !== 'doctype'
+  );
+}
+
 const twoslash = transformerTwoslash({
   // The transformer compares these after its own alias map, which turns
   // `typescript` into `ts`; listing shiki's full names matched nothing and
@@ -59,6 +70,13 @@ const twoslash = transformerTwoslash({
   // A snippet that does not type-check is a bug in the docs: fail the build.
   // `notwoslash` in a fence's meta skips the check (its default trigger).
   throws: true,
+  // Doc comments are Markdown; without these the popups show it raw.
+  rendererRich: {
+    renderMarkdown: (markdown) =>
+      markdownNodes(marked.parse(markdown, {async: false, gfm: true})),
+    renderMarkdownInline: (markdown) =>
+      markdownNodes(marked.parseInline(markdown, {async: false})),
+  },
   twoslashOptions: {
     compilerOptions: {
       target: ts.ScriptTarget.ES2023,
@@ -85,21 +103,32 @@ const shared = (() => {
     }));
 })();
 
-/**
- * `code` as highlighted HTML. `meta` is the rest of the fence's info string;
- * `notwoslash` there skips type-checking.
- */
+export interface HighlightOptions {
+  /** The rest of the fence's info string; `notwoslash` skips the check. */
+  readonly meta?: string | null;
+  /** Add a copy button (CodeCopy.svelte handles its clicks). */
+  readonly copy?: boolean;
+}
+
+/** One glyph per state of the copy button; CSS shows the current one. */
+const glyph = (svg: string, state: string) =>
+  svg.replace('<svg', () => `<svg data-glyph="${state}" aria-hidden="true"`);
+
+const COPY_BUTTON = `<button type="button" class="code-copy" aria-label="Copy code" title="Copy code">${glyph(Copy, 'idle')}${glyph(Check, 'done')}${glyph(X, 'failed')}</button>`;
+
+/** `code` as highlighted HTML, in a block with a copy button by default. */
 export async function highlight(
   code: string,
   lang: string | null | undefined,
-  meta: string | null | undefined
+  {meta, copy = true}: HighlightOptions = {}
 ): Promise<string> {
   const highlighter = await shared();
-  return highlighter.codeToHtml(code.trimEnd(), {
+  const html = highlighter.codeToHtml(code.trimEnd(), {
     lang: languageOf(lang),
     themes: THEMES,
     defaultColor: false,
     meta: meta ? {__raw: meta} : {},
     transformers: [twoslash],
   });
+  return copy ? `<div class="code-block">${html}${COPY_BUTTON}</div>` : html;
 }

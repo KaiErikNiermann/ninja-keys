@@ -50,7 +50,7 @@ const mdsvexOptions: MdsvexOptions = {
   extensions: ['.md'],
   highlight: {
     highlighter: async (code, lang, meta) =>
-      `{@html \`${escapeSvelte(await highlight(code, lang, meta))}\`}`,
+      `{@html \`${escapeSvelte(await highlight(code, lang, meta ? {meta} : {}))}\`}`,
   },
   rehypePlugins: [rehypeSlug, rehypeBaseLinks],
 };
@@ -81,8 +81,7 @@ function highlightImports(): Plugin {
       this.addWatchFile(file);
       const html = await highlight(
         await readFile(file, 'utf8'),
-        path.extname(file).slice(1),
-        undefined
+        path.extname(file).slice(1)
       );
       return `export default ${JSON.stringify(html)};`;
     },

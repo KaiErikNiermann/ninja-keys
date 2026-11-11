@@ -84,7 +84,29 @@
     opacity: 1;
     transform: none;
     pointer-events: auto;
+  }
+
+  /* Sizes are set, never relative: twoslash's own sheet draws the docs at
+     0.8em of the code, which came to 11px. The type reads like the code
+     blocks (mono, --text-sm); the docs like body text at the same size. */
+  .twoslash-floating :global(.twoslash-popup-code) {
+    font-family: var(--font-mono);
     font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+
+  .twoslash-floating :global(.twoslash-popup-docs) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+
+  .twoslash-floating :global(.twoslash-popup-docs code) {
+    font-family: var(--font-mono);
+    font-size: var(--code-size);
   }
 
   /* The JSDoc tags: on NinjaKeys these are the manifest's @fires and

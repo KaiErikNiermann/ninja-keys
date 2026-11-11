@@ -84,10 +84,16 @@
     --twoslash-unmatched-color: var(--color-ink-dim);
   }
 
+  /* A shadow does not read on a dark page; the border separates instead. */
+  :root[data-theme='dark'] {
+    --twoslash-popup-shadow: none;
+  }
+
   /* Shiki writes both themes' colours as variables; light-dark() picks by
      the root's color-scheme, which the theme sets. */
   .shiki,
-  .shiki span {
+  .shiki span,
+  .twoslash-floating span {
     /* stylelint-disable-next-line scale-unlimited/declaration-strict-value -- shiki's per-token variables are the colours here */
     color: light-dark(var(--shiki-light), var(--shiki-dark));
   }
