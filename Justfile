@@ -119,7 +119,7 @@ version-undo *flags:
 
 # --- Release ---
 
-# Bump, run every check, commit, tag and push. Publishing stays a separate step.
+# Bump, run every check, commit, tag and push; `just gh-release` then publishes
 release kind="patch":
     #!/usr/bin/env bash
     set -euo pipefail
@@ -135,6 +135,9 @@ release-version version:
     node scripts/version.ts set {{ version }}
     just _release
 
+# Publishing a release (not a draft) runs .github/workflows/publish.yml,
+# which publishes to npm.
+
 # Create the GitHub release for the current tag; notes from a file, else a draft
 gh-release notes="":
     #!/usr/bin/env bash
@@ -144,7 +147,7 @@ gh-release notes="":
       gh release create "$tag" --title "$tag" --notes-file "{{ notes }}"
     else
       gh release create "$tag" --title "$tag" --notes "" --draft
-      echo "Created $tag as a draft: write its notes on GitHub, then publish it."
+      echo "Created $tag as a draft: write its notes on GitHub, then publish it (that publishes to npm)."
     fi
 
 # Internal: commit the version rewrite, tag it and push both. On a failed
@@ -161,7 +164,7 @@ _release:
     git tag "v$version"
     git push
     git push origin "v$version"
-    echo "Tagged and pushed v$version. Next: just publish-dry, just publish, just gh-release"
+    echo "Tagged and pushed v$version. Next: just gh-release (publishing the release publishes to npm)"
 
 # Internal: refuse to release from a tree with uncommitted changes
 _clean-tree:
@@ -178,8 +181,17 @@ _clean-tree:
 publish-dry:
     pnpm publish --dry-run --no-git-checks
 
-# Publish @appulsauce/ninja-keys to npm (asks for your 2FA code if enabled)
-publish:
+# Run the npm publish workflow for an existing tag (default: the current version)
+publish tag="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    tag="{{ tag }}"
+    tag="${tag:-v$(node -p "require('./package.json').version")}"
+    gh workflow run publish.yml -f tag="$tag"
+    echo "Started the Publish workflow for $tag: gh run watch, or the Actions tab"
+
+# Publish from this machine instead of CI (asks for your 2FA code if enabled)
+publish-local:
     #!/usr/bin/env bash
     set -euo pipefail
     just version-check

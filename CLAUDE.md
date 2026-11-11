@@ -66,6 +66,6 @@ Published as `@appulsauce/ninja-keys` (fork of `ssleptsov/ninja-keys`; the tag s
 
 ## CI & Hooks
 
-- **GitHub Actions**: `lint.yml` and `test.yml` run on push/PR to main; `docs.yml` builds the docs site and deploys it to GitHub Pages from main
+- **GitHub Actions**: `lint.yml` and `test.yml` run on push/PR to main; `docs.yml` builds the docs site and deploys it to GitHub Pages from main; `publish.yml` publishes to npm by trusted publishing (OIDC, environment `npm`) when a GitHub release is published, or by hand with `just publish <tag>`
 - **Dependabot**: weekly npm + GitHub Actions updates with grouped PRs
 - **Husky pre-push**: runs build + lint + test, then the docs check, lint and build
