@@ -24,8 +24,6 @@
     "analyze:watch": "cem analyze --watch",
     "serve": "wds --root-dir=. --node-resolve --watch",
     "docs": "npm --prefix docs run dev",
-    "build:examples": "tsc -p tsconfig.examples.json",
-    "example": "npm run build && npm run build:examples && wds --node-resolve --open=/examples/docs-search/",
     "serve:prod": "MODE=prod npm run serve",
     "bundle": "npm run build && rollup -c --file dist/ninja-keys.bundled.js",
     "checksize": "rollup -c ; cat dist/ninja-keys.bundled.js | gzip -9 | wc -c ; rm dist/ninja-keys.bundled.js",
