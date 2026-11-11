@@ -150,6 +150,10 @@ export const baseStyles = css`
     background: var(--ninja-footer-background);
     padding: 0.5em 1em;
     display: flex;
+    /* Narrower than the four hints (a phone), wrap them rather than clip
+       the last one. */
+    flex-wrap: wrap;
+    row-gap: 0.25em;
     /* font-size: 0.75em; */
     border-top: var(--ninja-separate-border);
     color: var(--ninja-secondary-text-color);
