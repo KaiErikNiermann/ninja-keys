@@ -4,8 +4,8 @@
  * guide describes, so it doubles as an example.
  */
 
-import type {INinjaAction, Searcher} from 'ninja-keys';
-import {catsearchSearcher} from 'ninja-keys/catsearch';
+import type {INinjaAction, Searcher} from '@appulsauce/ninja-keys';
+import {catsearchSearcher} from '@appulsauce/ninja-keys/catsearch';
 import {enumField} from 'catsearch';
 import {
   Box,
@@ -123,13 +123,13 @@ export function siteActions(
     })),
     {
       id: 'Copy install command',
-      title: 'Copy “pnpm add ninja-keys”',
+      title: 'Copy “pnpm add @appulsauce/ninja-keys”',
       kind: 'command',
       section: 'Commands',
       keywords: 'install pnpm npm clipboard',
       icon: icon(Copy),
       handler: () => {
-        void navigator.clipboard.writeText('pnpm add ninja-keys');
+        void navigator.clipboard.writeText('pnpm add @appulsauce/ninja-keys');
       },
     },
   ];

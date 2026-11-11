@@ -2,9 +2,9 @@
 // those with a word that does, above those that only contain it, and
 // keywords last. When nothing matches, a notice says what Enter will do,
 // and the `selected` event (which fires with no action) does it.
-import 'ninja-keys';
-import {defaultSearcher} from 'ninja-keys';
-import type {INinjaAction, NinjaKeys, Searcher} from 'ninja-keys';
+import '@appulsauce/ninja-keys';
+import {defaultSearcher} from '@appulsauce/ninja-keys';
+import type {INinjaAction, NinjaKeys, Searcher} from '@appulsauce/ninja-keys';
 
 /** Lower is better; undefined is no match. */
 function rank(action: INinjaAction, search: string): number | undefined {

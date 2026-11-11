@@ -4,7 +4,7 @@
  * with `?highlight`.
  *
  * TypeScript and JavaScript go through twoslash, which type-checks each
- * snippet against the real `ninja-keys` and `catsearch` types and adds hover
+ * snippet against the real `@appulsauce/ninja-keys` and `catsearch` types and adds hover
  * types. A snippet that does not compile fails the build, so every one the
  * site shows is code that works. A preamble the reader does not need goes
  * above a `// ---cut---` line; a block that is deliberately not code (a

@@ -171,8 +171,8 @@ async function elementApi(tag: string, className: string): Promise<ElementApi> {
 
 /** The import specifier a TypeDoc module is published under. */
 const SPECIFIERS: Readonly<Record<string, string>> = {
-  'ninja-keys': 'ninja-keys',
-  catsearch: 'ninja-keys/catsearch',
+  'ninja-keys': '@appulsauce/ninja-keys',
+  catsearch: '@appulsauce/ninja-keys/catsearch',
 };
 
 async function interfaceMembers(

@@ -2,9 +2,9 @@
 // a year and a draft flag next to the fields ninja-keys reads; declaring
 // fields over them makes `kind:page tag:gpu updated:>=2026 -is:draft`
 // a query, with completions for every name and value.
-import 'ninja-keys';
-import type {INinjaAction, NinjaKeys} from 'ninja-keys';
-import {catsearchSearcher} from 'ninja-keys/catsearch';
+import '@appulsauce/ninja-keys';
+import type {INinjaAction, NinjaKeys} from '@appulsauce/ninja-keys';
+import {catsearchSearcher} from '@appulsauce/ninja-keys/catsearch';
 import {enumField, flagField, numberField, textField} from 'catsearch';
 
 type Kind = 'area' | 'topic' | 'page';

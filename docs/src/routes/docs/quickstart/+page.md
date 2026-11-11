@@ -16,8 +16,8 @@ Anywhere in the body; it draws nothing until it opens, and then covers the page.
 `data` takes an array of actions. Each has an `id` and a `title`; a `handler` runs when it is chosen.
 
 ```ts
-import 'ninja-keys';
-import type {INinjaAction} from 'ninja-keys';
+import '@appulsauce/ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 
 const actions: INinjaAction[] = [
   {
@@ -53,7 +53,7 @@ Press <kbd>Ctrl</kbd> <kbd>K</kbd>, or <kbd>⌘</kbd> <kbd>K</kbd> on a Mac, to 
 From your own button:
 
 ```ts
-import type {NinjaKeys} from 'ninja-keys';
+import type {NinjaKeys} from '@appulsauce/ninja-keys';
 declare const ninja: NinjaKeys;
 // ---cut---
 document.querySelector('#search-button')?.addEventListener('click', () => {

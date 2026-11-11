@@ -4,18 +4,18 @@
 
 # catsearch queries
 
-`ninja-keys/catsearch` is a searcher that reads the search box as a query in a small language: plain words as before, plus fields (`section:git`), negation, alternatives, and paths up the menu tree (`under.title:settings`). Completions for field names and values appear under the input as you type. It is built on [catsearch](https://github.com/KaiErikNiermann/textual-catsearch/tree/main/js), the web port of the Python [textual-catsearch](https://github.com/KaiErikNiermann/textual-catsearch), which uses the same language in terminal apps.
+`@appulsauce/ninja-keys/catsearch` is a searcher that reads the search box as a query in a small language: plain words as before, plus fields (`section:git`), negation, alternatives, and paths up the menu tree (`under.title:settings`). Completions for field names and values appear under the input as you type. It is built on [catsearch](https://github.com/KaiErikNiermann/textual-catsearch/tree/main/js), the web port of the Python [textual-catsearch](https://github.com/KaiErikNiermann/textual-catsearch), which uses the same language in terminal apps.
 
 ```ts
-import type {NinjaKeys} from 'ninja-keys';
+import type {NinjaKeys} from '@appulsauce/ninja-keys';
 declare const ninja: NinjaKeys;
 // ---cut---
-import {catsearchSearcher} from 'ninja-keys/catsearch';
+import {catsearchSearcher} from '@appulsauce/ninja-keys/catsearch';
 
 ninja.searcher = catsearchSearcher();
 ```
 
-Install `catsearch` next to `ninja-keys` first (see [Installation](/docs/installation#catsearch-for-field-queries)). The main `ninja-keys` entry never imports it.
+Install `catsearch` next to `@appulsauce/ninja-keys` first (see [Installation](/docs/installation#catsearch-for-field-queries)). The main `@appulsauce/ninja-keys` entry never imports it.
 
 ## Why queries in a palette
 
@@ -65,10 +65,10 @@ The completions come from the actions themselves, so `section:` offers exactly t
 Actions can carry properties of their own, and `catsearchSearcher` takes fields over them. Type the actions as an interface extending `INinjaAction` and build the fields with catsearch's constructors:
 
 ```ts
-import type {INinjaAction, NinjaKeys} from 'ninja-keys';
+import type {INinjaAction, NinjaKeys} from '@appulsauce/ninja-keys';
 declare const ninja: NinjaKeys;
 // ---cut---
-import {catsearchSearcher} from 'ninja-keys/catsearch';
+import {catsearchSearcher} from '@appulsauce/ninja-keys/catsearch';
 import {enumField, flagField, numberField, textField} from 'catsearch';
 
 interface Doc extends INinjaAction {

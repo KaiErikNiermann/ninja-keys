@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   import {goto} from '$app/navigation';
-  import type {NinjaKeys} from 'ninja-keys';
+  import type {NinjaKeys} from '@appulsauce/ninja-keys';
 
   import type {SearchEntry} from '#lib/search/entries.ts';
   import {theme} from '#lib/theme.svelte.ts';
@@ -23,7 +23,7 @@
     // The element and catsearch touch the DOM when defined, so they load in
     // the browser only; the pages themselves are prerendered.
     const [, {siteActions, siteSearcher}, response] = await Promise.all([
-      import('ninja-keys'),
+      import('@appulsauce/ninja-keys'),
       import('#lib/search/palette.ts'),
       fetch(routeHref('/search.json')),
     ]);

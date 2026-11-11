@@ -2,8 +2,8 @@
 // and handlers. `setup` gets this demo's <ninja-keys> and a `report`
 // function that writes to the line above; on your page the element is
 // `document.querySelector('ninja-keys')`.
-import 'ninja-keys';
-import type {INinjaAction, NinjaKeys} from 'ninja-keys';
+import '@appulsauce/ninja-keys';
+import type {INinjaAction, NinjaKeys} from '@appulsauce/ninja-keys';
 
 export default function setup(
   ninja: NinjaKeys,

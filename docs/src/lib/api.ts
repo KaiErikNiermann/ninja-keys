@@ -41,7 +41,7 @@ export interface ApiEntry {
 }
 
 export interface ApiModule {
-  /** What to import it from: `ninja-keys` or `ninja-keys/catsearch`. */
+  /** What to import it from: `@appulsauce/ninja-keys` or its `/catsearch`. */
   readonly specifier: string;
   readonly entries: readonly ApiEntry[];
 }

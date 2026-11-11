@@ -1,8 +1,8 @@
 // Menus inside menus, written as a tree: `children` holds the child
 // actions, and ninja-keys flattens it. An action with children opens its
 // menu when chosen; Backspace on an empty search goes back up.
-import 'ninja-keys';
-import type {INinjaAction, NinjaKeys} from 'ninja-keys';
+import '@appulsauce/ninja-keys';
+import type {INinjaAction, NinjaKeys} from '@appulsauce/ninja-keys';
 
 export default function setup(
   ninja: NinjaKeys,

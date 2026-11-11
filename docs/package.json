@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "catsearch": "file:../../../python-tools/textual-catsearch/js",
-    "ninja-keys": "workspace:*"
+    "@appulsauce/ninja-keys": "workspace:*"
   },
   "devDependencies": {
     "@eslint/css": "^2.0.1",

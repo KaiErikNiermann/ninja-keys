@@ -17,7 +17,7 @@ Matches keep the order of `data` and are grouped by section. This search is expo
 A searcher is a function from the search text to what the palette shows:
 
 ```ts
-import type {Searcher} from 'ninja-keys';
+import type {Searcher} from '@appulsauce/ninja-keys';
 // ---cut---
 const searcher: Searcher = (search, actions, context) => {
   //                        ^?
@@ -41,7 +41,7 @@ It returns a [`SearchResult`](/api#SearchResult):
 The palette calls the searcher on every render, which is every keystroke and more. Keep it cheap: anything derived from `actions` alone (an index, a lookup by id) can be built once and cached on the array's identity.
 
 ```ts
-import type {INinjaAction, Searcher} from 'ninja-keys';
+import type {INinjaAction, Searcher} from '@appulsauce/ninja-keys';
 // ---cut---
 let indexed: readonly INinjaAction[] | undefined;
 let byId = new Map<string, INinjaAction>();
@@ -67,8 +67,8 @@ const searcher: Searcher = (search, actions) => {
 To keep the default's matching and add to it, call `defaultSearcher` and change its result:
 
 ```ts
-import {defaultSearcher} from 'ninja-keys';
-import type {NinjaKeys, Searcher} from 'ninja-keys';
+import {defaultSearcher} from '@appulsauce/ninja-keys';
+import type {NinjaKeys, Searcher} from '@appulsauce/ninja-keys';
 declare const ninja: NinjaKeys;
 // ---cut---
 const withHelp: Searcher = (search, actions, context) => {
@@ -90,4 +90,4 @@ Pair a notice like that with a `selected` listener, which fires with no action w
 ## Searchers in these docs
 
 - [Ranked searcher](/examples/ranked-searcher): prefix matches before word matches before substrings, with a notice.
-- [catsearch queries](/docs/guide/catsearch): a field query language with completions, shipped as `ninja-keys/catsearch`. This site's own search uses it; press <kbd>Ctrl</kbd> <kbd>K</kbd> and type `kind:event`.
+- [catsearch queries](/docs/guide/catsearch): a field query language with completions, shipped as `@appulsauce/ninja-keys/catsearch`. This site's own search uses it; press <kbd>Ctrl</kbd> <kbd>K</kbd> and type `kind:event`.

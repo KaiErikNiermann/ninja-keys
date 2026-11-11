@@ -2,9 +2,10 @@
 
 Keyboard shortcut interface for your website that works with Vanilla JS, Vue, and React.
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fssleptsov%2Fninja-keys.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fssleptsov%2Fninja-keys?ref=badge_shield)
-![npm](https://img.shields.io/npm/v/ninja-keys)
-![npm](https://img.shields.io/npm/dw/ninja-keys)
+[![npm](https://img.shields.io/npm/v/@appulsauce/ninja-keys)](https://www.npmjs.com/package/@appulsauce/ninja-keys)
+![npm](https://img.shields.io/npm/dw/@appulsauce/ninja-keys)
+
+This is a maintained fork of [ssleptsov/ninja-keys](https://github.com/ssleptsov/ninja-keys), published as `@appulsauce/ninja-keys`: Lit 3, a pluggable search with a field query language, typed events, `open({search})` and `submit()`, and hotkey fixes. The element is still `<ninja-keys>`; moving over from `ninja-keys` is a change of import path.
 
 ## Documentation
 
@@ -53,13 +54,13 @@ Or because it allows your users to become keyboard ninjas 🙃
 ## Install from NPM
 
 ```bash
-pnpm add ninja-keys   # or npm i ninja-keys
+pnpm add @appulsauce/ninja-keys   # or npm i @appulsauce/ninja-keys
 ```
 
 Import if you are using webpack, rollup, vite or other build system.
 
 ```js
-import 'ninja-keys';
+import '@appulsauce/ninja-keys';
 ```
 
 ## Install from CDN
@@ -67,14 +68,14 @@ import 'ninja-keys';
 Mostly for usage in HTML/JS without a build system.
 
 ```html
-<script type="module" src="https://unpkg.com/ninja-keys?module"></script>
+<script type="module" src="https://esm.sh/@appulsauce/ninja-keys@1.3.0"></script>
 ```
 
 or inside your module scripts
 
 ```html
 <script type="module">
-  import {NinjaKeys} from 'https://unpkg.com/ninja-keys?module';
+  import {NinjaKeys} from 'https://esm.sh/@appulsauce/ninja-keys@1.3.0';
 </script>
 ```
 
@@ -257,7 +258,7 @@ By default the search box is read as a case-insensitive regular expression over 
 The `searcher` property replaces it. A searcher is a function `(search, actions, {root, cursor}) => {actions, notice?, suggestions?}`: it gets the search text, the flattened actions and the open submenu, and returns the actions to show in order. It may also return a `notice` (one line shown under the box) and `suggestions` (completions shown as chips under the box: clicking one, or pressing <kbd>Tab</kbd> for the first, replaces the search with its `search` text). `defaultSearcher` is exported for searchers that wrap it.
 
 ```js
-import {defaultSearcher} from 'ninja-keys';
+import {defaultSearcher} from '@appulsauce/ninja-keys';
 
 ninja.searcher = (search, actions, context) => {
   const result = defaultSearcher(search, actions, context);
@@ -267,10 +268,10 @@ ninja.searcher = (search, actions, context) => {
 
 ### Field queries with catsearch
 
-`ninja-keys/catsearch` is a searcher built on [catsearch](https://github.com/KaiErikNiermann/textual-catsearch/tree/main/js), a small query language with completion. Install `catsearch` next to `ninja-keys` (it is an optional peer dependency; the main entry does not load it).
+`@appulsauce/ninja-keys/catsearch` is a searcher built on [catsearch](https://github.com/KaiErikNiermann/textual-catsearch/tree/main/js), a small query language with completion. Install `catsearch` next to `@appulsauce/ninja-keys` (it is an optional peer dependency; the main entry does not load it).
 
 ```js
-import {catsearchSearcher} from 'ninja-keys/catsearch';
+import {catsearchSearcher} from '@appulsauce/ninja-keys/catsearch';
 
 ninja.searcher = catsearchSearcher();
 ```
@@ -291,7 +292,7 @@ An empty box lists the open menu as usual; a query searches every level below it
 Actions can carry properties of their own; pass fields that read them, built with catsearch's field constructors:
 
 ```ts
-import type {INinjaAction} from 'ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 import {enumField, numberField} from 'catsearch';
 
 interface Doc extends INinjaAction {
@@ -470,4 +471,3 @@ Copyright (c) [Sergei Sleptsov](https://sergei.ws) <hey@sergei.ws>
 
 Licensed under [the MIT license](./LICENSE).
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fssleptsov%2Fninja-keys.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fssleptsov%2Fninja-keys?ref=badge_large)

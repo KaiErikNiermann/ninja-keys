@@ -29,7 +29,7 @@ queries={[
 ## The fields
 
 ```ts
-import type {INinjaAction} from 'ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 interface Doc extends INinjaAction {
   readonly kind: 'area' | 'topic' | 'page';
   readonly tags: readonly string[];
@@ -37,7 +37,7 @@ interface Doc extends INinjaAction {
   readonly draft: boolean;
 }
 // ---cut---
-import {catsearchSearcher} from 'ninja-keys/catsearch';
+import {catsearchSearcher} from '@appulsauce/ninja-keys/catsearch';
 import {enumField, flagField, numberField, textField} from 'catsearch';
 
 const searcher = catsearchSearcher<Doc>({

@@ -13,7 +13,7 @@ The source is about 1,800 lines of TypeScript in `src/`: four Lit elements and t
 | `ninja-action.ts` | one row: icon, title, hotkey badges                                                        |
 | `ninja-footer.ts` | the default footer                                                                         |
 | `searcher.ts`     | the `Searcher` contract, `defaultSearcher`, `groupBySection`                               |
-| `catsearch.ts`    | `ninja-keys/catsearch`                                                                     |
+| `catsearch.ts`    | `@appulsauce/ninja-keys/catsearch`                                                                     |
 | `base-styles.ts`  | the shared styles and the `--ninja-*` defaults                                             |
 
 ### Commands
@@ -58,7 +58,7 @@ pnpm --dir docs run verify      # build the library, type-check, lint, build the
 
 ### Code blocks are compiled
 
-Every `ts` and `js` block is type-checked by [twoslash](https://twoslash.netlify.app) against the real `ninja-keys` and `catsearch` types when the site builds, and a block with a type error fails the build. That is also where the hover types in the blocks come from.
+Every `ts` and `js` block is type-checked by [twoslash](https://twoslash.netlify.app) against the real `@appulsauce/ninja-keys` and `catsearch` types when the site builds, and a block with a type error fails the build. That is also where the hover types in the blocks come from.
 
 - Declarations a snippet needs but the reader does not go above a `// ---cut---` line, which hides them.
 - `// ^?` under an identifier shows its type inline.
@@ -66,7 +66,7 @@ Every `ts` and `js` block is type-checked by [twoslash](https://twoslash.netlify
 
 ### Examples run what they show
 
-Each example is a module in `src/lib/examples/` whose default export sets up a palette. The example page imports it twice: once to run it in a `<Demo>`, and once with `?highlight` to show its source, highlighted and type-checked like any other block. So the code on the page is the code that ran. Example modules import only from packages (`ninja-keys`, `ninja-keys/catsearch`, `catsearch`), since twoslash checks each file on its own.
+Each example is a module in `src/lib/examples/` whose default export sets up a palette. The example page imports it twice: once to run it in a `<Demo>`, and once with `?highlight` to show its source, highlighted and type-checked like any other block. So the code on the page is the code that ran. Example modules import only from packages (`ninja-keys`, `@appulsauce/ninja-keys/catsearch`, `catsearch`), since twoslash checks each file on its own.
 
 ### Checks
 

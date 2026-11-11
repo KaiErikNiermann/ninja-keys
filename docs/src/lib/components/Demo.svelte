@@ -4,7 +4,7 @@
   a query) only, so Ctrl/Cmd+K stays the site search.
 -->
 <script lang="ts" module>
-  import type {NinjaKeys} from 'ninja-keys';
+  import type {NinjaKeys} from '@appulsauce/ninja-keys';
 
   /** What an example module's default export receives. */
   export type Setup = (
@@ -70,7 +70,7 @@
     const element = ninja;
     const area = page;
     ready = (async () => {
-      await import('ninja-keys');
+      await import('@appulsauce/ninja-keys');
       setup(element, report, area);
     })();
   });

@@ -1,8 +1,8 @@
 // The page drives the palette: a search box on the page opens it with
 // what was typed, a button runs the first match with submit(), and the
 // four events report what happened.
-import 'ninja-keys';
-import type {INinjaAction, NinjaKeys} from 'ninja-keys';
+import '@appulsauce/ninja-keys';
+import type {INinjaAction, NinjaKeys} from '@appulsauce/ninja-keys';
 
 export default function setup(
   ninja: NinjaKeys,

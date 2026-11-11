@@ -5,7 +5,7 @@ Everything in the palette is an action: a command that runs, a link, or a menu t
 ## The action
 
 ```ts
-import type {INinjaAction} from 'ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 
 const action: INinjaAction = {
   id: 'export-pdf', // unique; menus and breadcrumbs refer to it
@@ -27,7 +27,7 @@ Only `id` and `title` are required. Every field is described in the [API referen
 `handler` runs when the action is chosen, with Enter, a click, or its hotkey, and receives the action itself. The palette closes afterwards. Return `{keepOpen: true}` to keep it open, for actions people repeat (zoom, next page) or ones that open a menu:
 
 ```ts
-import type {INinjaAction} from 'ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 // ---cut---
 const zoomIn: INinjaAction = {
   id: 'zoom-in',
@@ -52,7 +52,7 @@ A menu is an action with `children`. Choosing it opens the menu: the list shows 
 As a tree, with `children` holding the child actions:
 
 ```ts
-import type {INinjaAction} from 'ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 // ---cut---
 const tree: INinjaAction[] = [
   {
@@ -69,7 +69,7 @@ const tree: INinjaAction[] = [
 Or as a flat list, where each child names its menu in `parent` and the menu lists the children's ids:
 
 ```ts
-import type {INinjaAction} from 'ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 // ---cut---
 const flat: INinjaAction[] = [
   {id: 'Theme', title: 'Change theme…', children: ['light', 'dark']},
@@ -87,7 +87,7 @@ The breadcrumbs show the menu's `id`, so give menus readable ids (`'Theme'`, not
 `open({parent})` opens the palette inside a menu. A menu action's own hotkey can do it, so the hotkey jumps straight to the choices:
 
 ```ts
-import type {INinjaAction, NinjaKeys} from 'ninja-keys';
+import type {INinjaAction, NinjaKeys} from '@appulsauce/ninja-keys';
 declare const ninja: NinjaKeys;
 // ---cut---
 const theme: INinjaAction = {
@@ -111,7 +111,7 @@ Search at the top level looks through every level, so `dark` finds the Dark acti
 `icon` takes HTML instead, usually an SVG. Give it the `ninja-icon` class so it is sized and coloured like the built-in icons (`--ninja-icon-size`, `--ninja-icon-color`):
 
 ```ts
-import type {INinjaAction} from 'ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 // ---cut---
 const search: INinjaAction = {
   id: 'search',

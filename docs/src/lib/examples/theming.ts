@@ -1,7 +1,7 @@
 // The same actions under each look; the look is only the element's class
 // (see theme-*.css). `compact` also replaces the footer through its slot.
-import 'ninja-keys';
-import type {NinjaKeys} from 'ninja-keys';
+import '@appulsauce/ninja-keys';
+import type {NinjaKeys} from '@appulsauce/ninja-keys';
 
 export default function setup(
   ninja: NinjaKeys,

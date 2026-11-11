@@ -19,7 +19,7 @@
     ],
     [
       'Field queries',
-      'ninja-keys/catsearch: section:git, under.title:settings, -is:draft, with completions as you type.',
+      '@appulsauce/ninja-keys/catsearch: section:git, under.title:settings, -is:draft, with completions as you type.',
       '/docs/guide/catsearch',
     ],
     [
@@ -118,7 +118,7 @@
   <ul class="flex flex-col gap-1.5">
     <li>
       <a href={resolve('/docs/installation')}>Installation</a>
-      <span class="text-ink-dim">and the state of the npm package</span>
+      <span class="text-ink-dim">from npm, a CDN, or a build of main</span>
     </li>
     <li>
       <a href={resolve('/examples/basic')}>Examples</a>

@@ -11,8 +11,8 @@
 ## Plain HTML and TypeScript
 
 ```ts
-import 'ninja-keys';
-import type {INinjaAction} from 'ninja-keys';
+import '@appulsauce/ninja-keys';
+import type {INinjaAction} from '@appulsauce/ninja-keys';
 declare const actions: INinjaAction[];
 // ---cut---
 const ninja = document.querySelector('ninja-keys');
@@ -30,13 +30,13 @@ React 19 sets properties on custom elements when the element has them, so `data`
 
 ```tsx
 import {useEffect, useRef} from 'react';
-import type {INinjaAction, NinjaKeys, NinjaSelectedDetail} from 'ninja-keys';
+import type {INinjaAction, NinjaKeys, NinjaSelectedDetail} from '@appulsauce/ninja-keys';
 
 export function CommandPalette({actions}: {actions: INinjaAction[]}) {
   const ref = useRef<NinjaKeys>(null);
 
   useEffect(() => {
-    void import('ninja-keys');
+    void import('@appulsauce/ninja-keys');
     const ninja = ref.current;
     const onSelected = (event: CustomEvent<NinjaSelectedDetail>) =>
       console.log(event.detail.action?.id);
@@ -51,7 +51,7 @@ export function CommandPalette({actions}: {actions: INinjaAction[]}) {
 In TypeScript, declare the tag for JSX once:
 
 ```tsx
-import type {NinjaKeys} from 'ninja-keys';
+import type {NinjaKeys} from '@appulsauce/ninja-keys';
 import type {DetailedHTMLProps, HTMLAttributes} from 'react';
 
 declare module 'react' {
@@ -84,8 +84,8 @@ vue({
 
 ```vue
 <script setup lang="ts">
-import 'ninja-keys';
-import type {INinjaAction, NinjaSelectedDetail} from 'ninja-keys';
+import '@appulsauce/ninja-keys';
+import type {INinjaAction, NinjaSelectedDetail} from '@appulsauce/ninja-keys';
 
 const actions: INinjaAction[] = [{id: 'home', title: 'Go home'}];
 const onSelected = (event: CustomEvent<NinjaSelectedDetail>) =>
@@ -109,14 +109,14 @@ Svelte sets a property when the element has it, so plain attributes work once th
 
 ```svelte
 <script lang="ts">
-  import type {INinjaAction, NinjaKeys} from 'ninja-keys';
+  import type {INinjaAction, NinjaKeys} from '@appulsauce/ninja-keys';
   import {onMount} from 'svelte';
 
   let {actions}: {actions: INinjaAction[]} = $props();
   let ninja: NinjaKeys | undefined = $state();
 
   onMount(() => {
-    void import('ninja-keys');
+    void import('@appulsauce/ninja-keys');
   });
 
   $effect(() => {

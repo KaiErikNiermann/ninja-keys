@@ -1,7 +1,7 @@
 {
-  "name": "ninja-keys",
+  "name": "@appulsauce/ninja-keys",
   "version": "1.3.0",
-  "description": "Ninja Keys",
+  "description": "A keyboard command palette as one web component: nested menus, per-action hotkeys, a pluggable search and a field query language. A maintained fork of ninja-keys.",
   "main": "dist/ninja-keys.js",
   "module": "dist/ninja-keys.js",
   "type": "module",
@@ -9,6 +9,15 @@
     ".": "./dist/ninja-keys.js",
     "./ninja-header": "./dist/ninja-header.js",
     "./catsearch": "./dist/catsearch.js"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.test.*",
+    "!dist/ninja-keys.bundled.js",
+    "custom-elements.json"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "start": "pnpm run build && concurrently -k -r \"pnpm run serve\" \"pnpm run build:watch\"",
@@ -29,9 +38,7 @@
     "checksize": "rollup -c ; cat dist/ninja-keys.bundled.js | gzip -9 | wc -c ; rm dist/ninja-keys.bundled.js",
     "test": "wtr --node-resolve",
     "test:watch": "wtr --node-resolve --watch",
-    "prepublishOnly": "pnpm run clean && pnpm run build",
-    "publish": "clean-publish",
-    "publish-test": "rimraf package && clean-publish --without-publish --temp-dir package",
+    "prepublishOnly": "pnpm run clean && pnpm run build && pnpm run analyze",
     "prepare": "husky",
     "docs:build": "pnpm --dir docs run build"
   },
@@ -49,20 +56,17 @@
     "hotkey"
   ],
   "author": "Serhii Slieptsov <hey@sergei.ws>",
+  "contributors": [
+    "Kai Erik Niermann (https://github.com/KaiErikNiermann)"
+  ],
   "license": "MIT",
-  "homepage": "https://github.com/ssleptsov/ninja-keys",
+  "homepage": "https://kaierikniermann.github.io/ninja-keys/",
+  "bugs": {
+    "url": "https://github.com/KaiErikNiermann/ninja-keys/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "git@github.com:ssleptsov/ninja-keys.git"
-  },
-  "clean-publish": {
-    "files": [
-      "dev",
-      "docs",
-      "rollup.config.js",
-      "web-dev-server.config.mjs",
-      "web-test-runner.config.js"
-    ]
+    "url": "git+https://github.com/KaiErikNiermann/ninja-keys.git"
   },
   "dependencies": {
     "hotkeys-js": "^3.13.9",
@@ -87,7 +91,6 @@
     "@web/dev-server": "^0.4.6",
     "@web/test-runner": "^0.20.2",
     "catsearch": "file:../../python-tools/textual-catsearch/js",
-    "clean-publish": "^6.0.1",
     "concurrently": "^10.0.3",
     "eslint": "^9.39.0",
     "eslint-plugin-security": "^4.0.1",

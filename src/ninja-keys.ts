@@ -165,7 +165,7 @@ export class NinjaKeys extends LitElement {
   /**
    * Decides which actions a search shows, and may add a notice and
    * completions under the search box. The default is the regular-expression
-   * match over `title` and `keywords`; `ninja-keys/catsearch` provides a
+   * match over `title` and `keywords`; `@appulsauce/ninja-keys/catsearch` provides a
    * field query language (`section:guides under.title:rendering`).
    */
   @property({attribute: false}) searcher: Searcher = defaultSearcher;

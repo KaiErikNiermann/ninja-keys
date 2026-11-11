@@ -13,7 +13,7 @@ Add the `dark` class to the element:
 To follow the page or the system, toggle the class from script:
 
 ```ts
-import type {NinjaKeys} from 'ninja-keys';
+import type {NinjaKeys} from '@appulsauce/ninja-keys';
 declare const ninja: NinjaKeys;
 // ---cut---
 const dark = matchMedia('(prefers-color-scheme: dark)');

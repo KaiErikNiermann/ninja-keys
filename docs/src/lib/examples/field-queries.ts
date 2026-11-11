@@ -1,9 +1,9 @@
 // catsearch over an editor's commands, with no configuration: the
 // built-in fields (title, keyword, section, has) and the menu relations
 // (parent., under.) are enough for most palettes.
-import 'ninja-keys';
-import type {INinjaAction, NinjaKeys} from 'ninja-keys';
-import {catsearchSearcher} from 'ninja-keys/catsearch';
+import '@appulsauce/ninja-keys';
+import type {INinjaAction, NinjaKeys} from '@appulsauce/ninja-keys';
+import {catsearchSearcher} from '@appulsauce/ninja-keys/catsearch';
 
 export default function setup(
   ninja: NinjaKeys,

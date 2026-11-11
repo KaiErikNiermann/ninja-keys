@@ -2,7 +2,7 @@
  * A field query language for ninja-keys, from the `catsearch` package.
  *
  * ```js
- * import {catsearchSearcher} from 'ninja-keys/catsearch';
+ * import {catsearchSearcher} from '@appulsauce/ninja-keys/catsearch';
  * ninja.searcher = catsearchSearcher();
  * ```
  *

@@ -736,7 +736,7 @@
                 "text": "Searcher"
               },
               "default": "defaultSearcher",
-              "description": "Decides which actions a search shows, and may add a notice and\ncompletions under the search box. The default is the regular-expression\nmatch over `title` and `keywords`; `ninja-keys/catsearch` provides a\nfield query language (`section:guides under.title:rendering`)."
+              "description": "Decides which actions a search shows, and may add a notice and\ncompletions under the search box. The default is the regular-expression\nmatch over `title` and `keywords`; `@appulsauce/ninja-keys/catsearch` provides a\nfield query language (`section:guides under.title:rendering`)."
             },
             {
               "kind": "method",
