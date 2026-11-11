@@ -73,11 +73,19 @@ export default tseslint.config(
     // Build/tooling configs run in node, not the browser. web-dev-server.config.mjs
     // was absent from this list and uses `process`, which only surfaced once
     // linting covered more than src/.
-    files: ['*.js', '*.mjs', '*.cjs'],
+    files: ['*.js', '*.mjs', '*.cjs', 'scripts/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.node,
       },
+    },
+  },
+  {
+    // Repository tooling reads and writes files it found through git in the
+    // repository itself; a non-literal path is the whole point there.
+    files: ['scripts/**/*.ts'],
+    rules: {
+      'security/detect-non-literal-fs-filename': 'off',
     },
   },
   {
