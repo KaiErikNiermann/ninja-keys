@@ -2,16 +2,11 @@
 
 Keyboard shortcut interface for your website that works with Vanilla JS, Vue, and React.
 
-[![npm](https://img.shields.io/npm/v/@appulsauce/ninja-keys)](https://www.npmjs.com/package/@appulsauce/ninja-keys)
-![npm](https://img.shields.io/npm/dw/@appulsauce/ninja-keys)
-
 This is a maintained fork of [ssleptsov/ninja-keys](https://github.com/ssleptsov/ninja-keys), published as `@appulsauce/ninja-keys`: Lit 3, a pluggable search with a field query language, typed events, `open({search})` and `submit()`, and hotkey fixes. The element is still `<ninja-keys>`; moving over from `ninja-keys` is a change of import path.
 
 ## Documentation
 
 [kaierikniermann.github.io/ninja-keys](https://kaierikniermann.github.io/ninja-keys/): installation, a guide, an API reference generated from the source, and live examples from a basic palette to field queries. The site's own search is ninja-keys with the catsearch searcher.
-
-![Demo](./docs/static/demo-min.gif)
 
 ## Motivation
 
@@ -26,6 +21,8 @@ At the same time, I have a few Vue projects where something like this could be u
 so I decided to give it a try for [Web Components](https://open-wc.org/) and [Lit Element](https://lit.dev/).
 
 ## Integrations
+
+These examples were written for the original `ninja-keys` package; they work the same with this one after changing the import to `@appulsauce/ninja-keys`. The [framework guide](https://kaierikniermann.github.io/ninja-keys/docs/guide/frameworks) covers the current version.
 
 - [Vue 3 Example - Codesandbox](https://codesandbox.io/s/ninja-keys-demo-vue3-bps5w?file=/public/index.html)
 - [Vue 2 Example - Codesandbox](https://codesandbox.io/s/ninja-keys-demo-vue2-b129z)
@@ -68,7 +65,10 @@ import '@appulsauce/ninja-keys';
 Mostly for usage in HTML/JS without a build system.
 
 ```html
-<script type="module" src="https://esm.sh/@appulsauce/ninja-keys@1.3.0"></script>
+<script
+  type="module"
+  src="https://esm.sh/@appulsauce/ninja-keys@1.3.0"
+></script>
 ```
 
 or inside your module scripts
@@ -95,7 +95,7 @@ Add the tag to your HTML.
       id: 'Projects',
       title: 'Open Projects',
       hotkey: 'ctrl+N',
-      icon: 'apps',
+      mdIcon: 'apps',
       section: 'Projects',
       handler: () => {
         // it's auto register above hotkey with this handler
@@ -105,7 +105,7 @@ Add the tag to your HTML.
     {
       id: 'Theme',
       title: 'Change theme...',
-      icon: 'desktop_windows',
+      mdIcon: 'desktop_windows',
       children: ['Light Theme', 'Dark Theme', 'System Theme'],
       hotkey: 'ctrl+T',
       handler: () => {
@@ -118,7 +118,7 @@ Add the tag to your HTML.
     {
       id: 'Light Theme',
       title: 'Change theme to Light',
-      icon: 'light_mode',
+      mdIcon: 'light_mode',
       parent: 'Theme',
       handler: () => {
         // simple handler
@@ -128,7 +128,7 @@ Add the tag to your HTML.
     {
       id: 'Dark Theme',
       title: 'Change theme to Dark',
-      icon: 'dark_mode',
+      mdIcon: 'dark_mode',
       parent: 'Theme',
       handler: () => {
         // simple handler
@@ -145,32 +145,34 @@ Library using flat data structure inside, as in the example above. But you can a
 {
   id: 'Theme',
   children: [
-    { id: 'light' title: 'light_mode', },
-    { id: 'System Theme',
+    {id: 'Light Theme', title: 'Light', mdIcon: 'light_mode'},
+    {
+      id: 'System Theme',
+      title: 'System',
       children: [
-        { title: 'Sub item 1' },
-        { title: 'Sub item 2' }
-      ]
-    }
+        {id: 'Sub item 1', title: 'Sub item 1'},
+        {id: 'Sub item 2', title: 'Sub item 2'},
+      ],
+    },
   ]
 }
 ```
 
 ## Attributes
 
-| Field                | Default                     | Description                                                 |
-| -------------------- | --------------------------- | ----------------------------------------------------------- |
-| placeholder          | Type a command or search... | Placeholder for search                                      |
-| disableHotkeys       | false                       | If attribute exist will register all hotkey for all actions |
-| hideBreadcrumbs      | false                       | Hide breadcrumbs on header if true                          |
-| openHotkey           | cmd+k,ctrl+k                | Open or close shortcut                                      |
-| navigationUpHotkey   | up,shift+tab                | Navigation up shortcuts                                     |
-| navigationDownHotkey | down,tab                    | Navigation down shortcuts                                   |
-| closeHotkey          | esc                         | Close shortcut                                              |
-| goBackHotkey         | backspace                   | Go back on one level if has parent menu                     |
-| selectHotkey         | enter                       | Select action and execute handler or open submenu           |
-| hotKeysJoinedView    | false                       | If exist/true will display hotkeys inside one element       |
-| noAutoLoadMdIcons    | false                       | If exist it disable load material icons font on connect     |
+| Field                | Default                     | Description                                                            |
+| -------------------- | --------------------------- | ---------------------------------------------------------------------- |
+| placeholder          | Type a command or search... | Placeholder for search                                                 |
+| disableHotkeys       | false                       | If set, actions' own hotkeys are not registered (navigation keys stay) |
+| hideBreadcrumbs      | false                       | Hide breadcrumbs on header if true                                     |
+| openHotkey           | cmd+k,ctrl+k                | Open or close shortcut                                                 |
+| navigationUpHotkey   | up,shift+tab                | Navigation up shortcuts                                                |
+| navigationDownHotkey | down,tab                    | Navigation down shortcuts                                              |
+| closeHotkey          | esc                         | Close shortcut                                                         |
+| goBackHotkey         | backspace                   | Go back on one level if has parent menu                                |
+| selectHotkey         | enter                       | Select action and execute handler or open submenu                      |
+| hotKeysJoinedView    | false                       | If exist/true will display hotkeys inside one element                  |
+| noAutoLoadMdIcons    | false                       | If exist it disable load material icons font on connect                |
 
 #### Example
 
@@ -185,27 +187,28 @@ Library using flat data structure inside, as in the example above. But you can a
 ## Data
 
 Array of `INinjaAction` - interface properties below
-| Name | Type | Description |
-|----------|-------------------------|----------------------------------------------------------------------------------------|
-| id | string | Unique id/text. Will be displayed as breadcrumb in multimenu |
-| title | string | Title of action |
-| hotkey | string(optional) | Shortcut to display and register |
-| handler | Function(optional) | Function to execute on select |
-| mdIcon | string(optional) | Material Design font icon name |
-| icon | string(optional) | Html to render as custom icon |
-| parent | string(optional) | If using flat structure use id of actions to make a multilevel menu |
-| keywords | string(optional) | Keywords to use for search |
-| children | Array<string>(optional) | If using flat structure then ids of child menu actions. Not required on tree structure |
-| section | string(optional) | Section text. Like a header will be group with other same sections |
+
+| Name     | Type                                      | Description                                                                                 |
+| -------- | ----------------------------------------- | ------------------------------------------------------------------------------------------- |
+| id       | string                                    | Unique id/text. Will be displayed as breadcrumb in multimenu                                |
+| title    | string                                    | Title of action                                                                             |
+| hotkey   | string(optional)                          | Shortcut to display and register                                                            |
+| handler  | Function(optional)                        | Function to execute on select                                                               |
+| mdIcon   | string(optional)                          | Material Design font icon name                                                              |
+| icon     | string(optional)                          | Html to render as custom icon                                                               |
+| parent   | string(optional)                          | If using flat structure use id of actions to make a multilevel menu                         |
+| keywords | string(optional)                          | Keywords to use for search                                                                  |
+| children | `string[]` or `INinjaAction[]` (optional) | The submenu: ids of child actions in a flat list, or the child actions themselves in a tree |
+| section  | string(optional)                          | Section text. Like a header will be group with other same sections                          |
 
 ## Methods
 
-| Name        | Arg                 | Description                                        |
-| ----------- | ------------------- | -------------------------------------------------- |
+| Name        | Arg                                  | Description                                                                                                    |
+| ----------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | `open`      | { parent?: string, search?: string } | Open menu with parent, if null then open root menu; `search` starts the search box with that text, as if typed |
-| `close`     |                     | Close menu                                         |
-| `submit`    |                     | Run the selected action, as Enter does (after `open({search})`, the first match) |
-| `setParent` | parent?: string     | Navigate to parent menu                            |
+| `close`     |                                      | Close menu                                                                                                     |
+| `submit`    |                                      | Run the selected action, as Enter does (after `open({search})`, the first match)                               |
+| `setParent` | parent?: string                      | Navigate to parent menu                                                                                        |
 
 #### Example
 
@@ -222,12 +225,12 @@ ninja.open({search: 'the'});
 
 Component wide events
 
-| Name       | Description                                                | Payload                                                           |
-| ---------- | ---------------------------------------------------------- | ----------------------------------------------------------------- |
-| `change`   | Emitted when on each change of search input                | `{ detail: { search: string, actions: Array<NinjaAction> } }`     |
-| `selected` | Emitted when on user selected action or on submit of input | `{ detail: { search: string, action: NinjaAction or undefined }}` |
-| `open`     | Emitted when the palette becomes visible, however it was opened | none                                                              |
-| `close`    | Emitted when the palette is hidden, however it was closed (method, hotkey, Escape, overlay click, action) | none |
+| Name       | Description                                                                                               | Payload                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `change`   | Emitted when on each change of search input                                                               | `{ detail: { search: string, actions: Array<NinjaAction> } }`     |
+| `selected` | Emitted when on user selected action or on submit of input                                                | `{ detail: { search: string, action: NinjaAction or undefined }}` |
+| `open`     | Emitted when the palette becomes visible, however it was opened                                           | none                                                              |
+| `close`    | Emitted when the palette is hidden, however it was closed (method, hotkey, Escape, overlay click, action) | none                                                              |
 
 The events are typed: `ninja.addEventListener('selected', (e) => e.detail.action)` needs no cast (`NinjaKeysEventMap`, `NinjaChangeDetail` and `NinjaSelectedDetail` are exported).
 
@@ -262,7 +265,10 @@ import {defaultSearcher} from '@appulsauce/ninja-keys';
 
 ninja.searcher = (search, actions, context) => {
   const result = defaultSearcher(search, actions, context);
-  return {...result, notice: result.actions.length ? '' : 'Nothing here; Enter searches the API'};
+  return {
+    ...result,
+    notice: result.actions.length ? '' : 'Nothing here; Enter searches the API',
+  };
 };
 ```
 
@@ -278,14 +284,14 @@ ninja.searcher = catsearchSearcher();
 
 Bare words still search titles and keywords, so plain searches read as before. On top of that:
 
-| Query | Matches |
-| --- | --- |
-| `section:guides` | actions in a section; `section:guides,api` for either |
-| `keyword:gpu`, `kw:gpu` | a keyword |
-| `has:hotkey`, `has:children`, `has:parent` | actions with one |
-| `parent.title:lighting` | actions directly inside the menu titled Lighting |
-| `under.title:rendering` | actions anywhere below Rendering, however deep |
-| `-section:api`, `a OR b`, `(…)` | negation, alternatives, grouping |
+| Query                                      | Matches                                               |
+| ------------------------------------------ | ----------------------------------------------------- |
+| `section:guides`                           | actions in a section; `section:guides,api` for either |
+| `keyword:gpu`, `kw:gpu`                    | a keyword                                             |
+| `has:hotkey`, `has:children`, `has:parent` | actions with one                                      |
+| `parent.title:lighting`                    | actions directly inside the menu titled Lighting      |
+| `under.title:rendering`                    | actions anywhere below Rendering, however deep        |
+| `-section:api`, `a OR b`, `(…)`            | negation, alternatives, grouping                      |
 
 An empty box lists the open menu as usual; a query searches every level below it. Completions for field names and values appear under the box as you type, and a field it does not know is reported on the same line.
 
@@ -330,12 +336,15 @@ If you need more style control, use any of the CSS variables below.
 | --ninja-overflow-background        | rgba(255, 255, 255, 0.5);                          |
 | --ninja-text-color                 | rgb(60, 65, 73);                                   |
 | --ninja-font-size                  | 16px;                                              |
+| --ninja-font-family                | inherit;                                           |
+| --ninja-code-font-family           | ui-monospace, monospace;                           |
 | --ninja-top                        | 20%;                                               |
 | --ninja-key-border-radius          | 0.25em                                             |
 | --ninja-accent-color               | rgb(110, 94, 210);                                 |
 | --ninja-secondary-background-color | rgb(239, 241, 244);                                |
 | --ninja-secondary-text-color       | rgb(107, 111, 118);                                |
 | --ninja-selected-background        | rgb(248, 249, 251);                                |
+| --ninja-selected-text-color        | inherit;                                           |
 | --ninja-icon-color                 | var(--ninja-secondary-text-color);                 |
 | --ninja-icon-size                  | 1.2em;                                             |
 | --ninja-separate-border            | 1px solid var(--ninja-secondary-background-color); |
@@ -346,6 +355,8 @@ If you need more style control, use any of the CSS variables below.
 | --ninja-footer-background          | rgba(242, 242, 242, 0.4);                          |
 | --ninja-placeholder-color          | #8e8e8e                                            |
 | --ninja-z-index                    | 1                                                  |
+
+The [API reference](https://kaierikniermann.github.io/ninja-keys/api#ninja-keys-cssproperties) lists them with descriptions.
 
 #### Example
 
@@ -362,16 +373,16 @@ Because styles are encapsulated by Shadow DOM, it will be annoying to create css
 That's why you can use `::part` to make a custom look for the component.
 It's supported by [all modern browsers](https://caniuse.com/mdn-css_selectors_part)
 
-| Name                | Description                                            |
-| ------------------- | ------------------------------------------------------ |
-| actions-list        | Element that wraps all child elements.                 |
-| ninja-action        | Single action                                          |
-| ninja-selected      | Selected action                                        |
-| ninja-input         | Input element                                          |
-| ninja-input-wrapper | Wrapper element around div, useful for advanced styles |
+| Name                | Description                                                      |
+| ------------------- | ---------------------------------------------------------------- |
+| actions-list        | Element that wraps all child elements.                           |
+| ninja-action        | Single action                                                    |
+| ninja-selected      | Selected action                                                  |
+| ninja-input         | Input element                                                    |
+| ninja-input-wrapper | Wrapper element around div, useful for advanced styles           |
 | ninja-search-hint   | Line under the input holding a searcher's completions and notice |
-| ninja-suggestion    | One completion chip                                    |
-| ninja-notice        | A searcher's notice                                    |
+| ninja-suggestion    | One completion chip                                              |
+| ninja-notice        | A searcher's notice                                              |
 
 #### Example style using parts
 
@@ -451,7 +462,7 @@ ninja-keys {
 pnpm run start
 ```
 
-The repository is a pnpm workspace with the docs site in `docs/` (SvelteKit): `pnpm install` once, then `pnpm run docs`.
+The repository is a pnpm workspace with the docs site in `docs/` (SvelteKit): `pnpm install` once, then `pnpm run docs`. `just` lists the same commands plus versioning and release recipes; the [contributing guide](https://kaierikniermann.github.io/ninja-keys/docs/guide/contributing) has the rest.
 
 ## Linting
 
@@ -470,4 +481,3 @@ pnpm run lint
 Copyright (c) [Sergei Sleptsov](https://sergei.ws) <hey@sergei.ws>
 
 Licensed under [the MIT license](./LICENSE).
-
