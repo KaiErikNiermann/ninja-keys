@@ -90,6 +90,7 @@ export type {INinjaAction} from './interfaces/ininja-action.js';
  * @cssprop [--ninja-footer-background=rgba(242, 242, 242, 0.4)] - The footer.
  */
 @customElement('ninja-keys')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- the merged interface below only adds overloads to the inherited addEventListener/removeEventListener; it declares no fields
 export class NinjaKeys extends LitElement {
   static override readonly styles = [baseStyles];
 
@@ -230,7 +231,9 @@ export class NinjaKeys extends LitElement {
    * focus or tear down whatever it opened the palette in.
    */
   private _announce(type: 'open' | 'close') {
-    this.dispatchEvent(new CustomEvent(type, {bubbles: true, composed: true}));
+    this.dispatchEvent(
+      new CustomEvent(type, {detail: null, bubbles: true, composed: true})
+    );
   }
 
   /**
@@ -618,7 +621,7 @@ export class NinjaKeys extends LitElement {
     // fire selected event even when action is empty/not selected,
     // so possible handle api search for example
     this.dispatchEvent(
-      new CustomEvent('selected', {
+      new CustomEvent<NinjaSelectedDetail>('selected', {
         detail: {search: this._search, action},
         bubbles: true,
         composed: true,
@@ -664,7 +667,7 @@ export class NinjaKeys extends LitElement {
     this._cursor = cursor;
     await this.updateComplete;
     this.dispatchEvent(
-      new CustomEvent('change', {
+      new CustomEvent<NinjaChangeDetail>('change', {
         detail: {search: this._search, actions: this._actionMatches},
         bubbles: true,
         composed: true,
@@ -677,6 +680,67 @@ export class NinjaKeys extends LitElement {
       this.close();
     }
   }
+}
+
+/** `detail` of the `change` event. */
+export interface NinjaChangeDetail {
+  /** The search text. */
+  readonly search: string;
+  /** The actions now shown, in order. */
+  readonly actions: readonly INinjaAction[];
+}
+
+/** `detail` of the `selected` event. */
+export interface NinjaSelectedDetail {
+  /** The search text when the choice was made. */
+  readonly search: string;
+  /** The chosen action, or undefined when Enter was pressed on no match. */
+  readonly action: INinjaAction | undefined;
+}
+
+/** The events `<ninja-keys>` fires, for typed listeners. */
+export interface NinjaKeysEventMap {
+  change: CustomEvent<NinjaChangeDetail>;
+  selected: CustomEvent<NinjaSelectedDetail>;
+  open: CustomEvent<null>;
+  close: CustomEvent<null>;
+}
+
+// Overloads merged into the class, so `addEventListener('selected', e => …)`
+// gives `e.detail` its type without a cast; any other event name falls
+// through to HTMLElement's own overloads.
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- overload signatures only, see the class
+export interface NinjaKeys {
+  addEventListener<K extends keyof NinjaKeysEventMap>(
+    type: K,
+    listener: (this: NinjaKeys, event: NinjaKeysEventMap[K]) => unknown,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  addEventListener<K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: NinjaKeys, event: HTMLElementEventMap[K]) => unknown,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  removeEventListener<K extends keyof NinjaKeysEventMap>(
+    type: K,
+    listener: (this: NinjaKeys, event: NinjaKeysEventMap[K]) => unknown,
+    options?: boolean | EventListenerOptions
+  ): void;
+  removeEventListener<K extends keyof HTMLElementEventMap>(
+    type: K,
+    listener: (this: NinjaKeys, event: HTMLElementEventMap[K]) => unknown,
+    options?: boolean | EventListenerOptions
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {

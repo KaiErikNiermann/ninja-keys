@@ -1,5 +1,6 @@
 import {fixture, html, expect, waitUntil} from '@open-wc/testing';
 import {NinjaKeys} from './ninja-keys.js';
+import type {NinjaChangeDetail, NinjaSelectedDetail} from './ninja-keys.js';
 import './ninja-keys.js';
 import {INinjaAction} from './interfaces/ininja-action.js';
 import hotkeys from 'hotkeys-js';
@@ -210,10 +211,11 @@ describe('ninja-keys', () => {
     el.open();
     await el.updateComplete;
 
-    let selectedDetail: {search: string; action?: INinjaAction} | null = null;
-    el.addEventListener('selected', ((e: CustomEvent) => {
+    // Typed through NinjaKeysEventMap: no cast on the listener.
+    let selectedDetail: NinjaSelectedDetail | null = null;
+    el.addEventListener('selected', (e) => {
       selectedDetail = e.detail;
-    }) as EventListener);
+    });
 
     // Click the first action
     const firstAction = el.shadowRoot!.querySelector('ninja-action');
@@ -234,10 +236,10 @@ describe('ninja-keys', () => {
     el.open();
     await el.updateComplete;
 
-    let changeDetail: {search: string; actions: INinjaAction[]} | null = null;
-    el.addEventListener('change', ((e: CustomEvent) => {
+    let changeDetail: NinjaChangeDetail | null = null;
+    el.addEventListener('change', (e) => {
       changeDetail = e.detail;
-    }) as EventListener);
+    });
 
     const header = el.shadowRoot!.querySelector('ninja-header');
     header!.dispatchEvent(
@@ -506,13 +508,19 @@ describe('ninja-keys', () => {
     el.open();
     await el.updateComplete;
     const header = el.shadowRoot!.querySelector('ninja-header')!;
-    await (header as unknown as {updateComplete: Promise<unknown>}).updateComplete;
-    await waitUntil(() => header.shadowRoot!.activeElement?.tagName === 'INPUT', 'search input focused');
+    await (header as unknown as {updateComplete: Promise<unknown>})
+      .updateComplete;
+    await waitUntil(
+      () => header.shadowRoot!.activeElement?.tagName === 'INPUT',
+      'search input focused'
+    );
     el.remove();
   });
 
   it('announces opening and closing, once per change', async () => {
-    const el = await fixture<NinjaKeys>(html`<ninja-keys .data=${sampleActions}></ninja-keys>`);
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${sampleActions}></ninja-keys>`
+    );
     const events: string[] = [];
     el.addEventListener('open', () => events.push('open'));
     el.addEventListener('close', () => events.push('close'));
@@ -524,12 +532,16 @@ describe('ninja-keys', () => {
   });
 
   it('announces a close made from inside (Escape, an action)', async () => {
-    const el = await fixture<NinjaKeys>(html`<ninja-keys .data=${sampleActions}></ninja-keys>`);
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${sampleActions}></ninja-keys>`
+    );
     let closed = 0;
     el.addEventListener('close', () => closed++);
     el.open();
     await el.updateComplete;
-    (el as unknown as {_actionSelected(a: INinjaAction): void})._actionSelected({...sampleActions[2]!, handler: () => {}});
+    (el as unknown as {_actionSelected(a: INinjaAction): void})._actionSelected(
+      {...sampleActions[2]!, handler: () => {}}
+    );
     expect(closed).to.equal(1);
   });
 
@@ -541,29 +553,41 @@ describe('ninja-keys', () => {
     el.open({search: 'sett'});
     await el.updateComplete;
     const header = el.shadowRoot!.querySelector('ninja-header')!;
-    await (header as unknown as {updateComplete: Promise<unknown>}).updateComplete;
+    await (header as unknown as {updateComplete: Promise<unknown>})
+      .updateComplete;
     await el.updateComplete;
     const input = header.shadowRoot!.querySelector('input')!;
     expect(input.value).to.equal('sett');
-    const shown = [...el.shadowRoot!.querySelectorAll('ninja-action')].map((a) => (a as unknown as {action: INinjaAction}).action.id);
+    const shown = [...el.shadowRoot!.querySelectorAll('ninja-action')].map(
+      (a) => (a as unknown as {action: INinjaAction}).action.id
+    );
     expect(shown).to.deep.equal(['settings']);
     el.remove();
   });
 
   it('a later open without a search starts empty', async () => {
-    const el = await fixture<NinjaKeys>(html`<ninja-keys .data=${sampleActions}></ninja-keys>`);
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${sampleActions}></ninja-keys>`
+    );
     el.open({search: 'sett'});
     await el.updateComplete;
     el.close();
     el.open();
     await el.updateComplete;
-    expect(el.shadowRoot!.querySelectorAll('ninja-action')).to.have.length(sampleActions.filter((a) => !a.parent).length);
+    expect(el.shadowRoot!.querySelectorAll('ninja-action')).to.have.length(
+      sampleActions.filter((a) => !a.parent).length
+    );
   });
 
   it('submit runs the selected action, and only while open', async () => {
     const ran: string[] = [];
-    const actions = sampleActions.map((a) => ({...a, handler: () => ran.push(a.id)}));
-    const el = await fixture<NinjaKeys>(html`<ninja-keys .data=${actions}></ninja-keys>`);
+    const actions = sampleActions.map((a) => ({
+      ...a,
+      handler: () => ran.push(a.id),
+    }));
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${actions}></ninja-keys>`
+    );
     el.submit();
     expect(ran).to.deep.equal([]);
     el.open({search: 'sett'});
