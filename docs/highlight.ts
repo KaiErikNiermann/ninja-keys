@@ -49,22 +49,22 @@ export function languageOf(name: string | null | undefined): Language {
   return isLanguage(resolved) ? resolved : 'text';
 }
 
-const TWOSLASH_LANGUAGES: ReadonlySet<Language> = new Set<Language>([
-  'typescript',
-  'javascript',
-]);
-
 const twoslash = transformerTwoslash({
-  langs: [...TWOSLASH_LANGUAGES],
+  // The transformer compares these after its own alias map, which turns
+  // `typescript` into `ts`; listing shiki's full names matched nothing and
+  // silently skipped every block.
+  langs: ['ts', 'js'],
+  langAlias: {typescript: 'ts', javascript: 'js'},
   explicitTrigger: false,
   // A snippet that does not type-check is a bug in the docs: fail the build.
+  // `notwoslash` in a fence's meta skips the check (its default trigger).
   throws: true,
   twoslashOptions: {
     compilerOptions: {
-      target: ts.ScriptTarget.ES2022,
+      target: ts.ScriptTarget.ES2023,
       module: ts.ModuleKind.ESNext,
       moduleResolution: ts.ModuleResolutionKind.Bundler,
-      lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'],
+      lib: ['lib.es2023.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'],
       strict: true,
       exactOptionalPropertyTypes: true,
       noUncheckedIndexedAccess: true,
@@ -94,14 +94,12 @@ export async function highlight(
   lang: string | null | undefined,
   meta: string | null | undefined
 ): Promise<string> {
-  const language = languageOf(lang);
-  const isChecked =
-    TWOSLASH_LANGUAGES.has(language) && !meta?.includes('notwoslash');
   const highlighter = await shared();
   return highlighter.codeToHtml(code.trimEnd(), {
-    lang: language,
+    lang: languageOf(lang),
     themes: THEMES,
     defaultColor: false,
-    transformers: isChecked ? [twoslash] : [],
+    meta: meta ? {__raw: meta} : {},
+    transformers: [twoslash],
   });
 }

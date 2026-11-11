@@ -197,7 +197,8 @@ async function entry(
 ): Promise<ApiEntry | undefined> {
   const {name} = declaration;
   const source = declaration.sources?.[0]?.url;
-  const base = {name, anchor: anchorFor('', name), source: source ?? ''};
+  // The symbol's own name, case and all: `/api#INinjaAction`.
+  const base = {name, anchor: name, source: source ?? ''};
 
   switch (declaration.kind) {
     case Kind.Function: {

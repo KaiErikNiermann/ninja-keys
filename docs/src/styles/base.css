@@ -65,6 +65,25 @@
     outline-offset: 2px;
   }
 
+  /* Twoslash's hover popups, in the site's colours. Its stylesheet sets
+     these on :root in this layer, before this file, so this wins. */
+  :root {
+    --twoslash-popup-bg: var(--color-raised);
+    --twoslash-popup-color: var(--color-ink);
+    --twoslash-popup-shadow: var(--shadow-pop);
+    --twoslash-border-color: var(--color-edge);
+    --twoslash-underline-color: var(--color-ink-dim);
+    --twoslash-highlighted-border: var(--color-accent);
+    --twoslash-highlighted-bg: var(--color-accent-soft);
+    --twoslash-docs-color: var(--color-ink-dim);
+    --twoslash-docs-font: var(--font-body);
+    --twoslash-code-font: var(--font-mono);
+    --twoslash-error-color: var(--color-warn);
+    --twoslash-cursor-color: var(--color-accent);
+    --twoslash-matched-color: var(--color-accent);
+    --twoslash-unmatched-color: var(--color-ink-dim);
+  }
+
   /* Shiki writes both themes' colours as variables; light-dark() picks by
      the root's color-scheme, which the theme sets. */
   .shiki,

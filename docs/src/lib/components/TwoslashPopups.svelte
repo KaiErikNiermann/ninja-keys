@@ -87,6 +87,12 @@
     font-size: var(--text-sm);
   }
 
+  /* The JSDoc tags: on NinjaKeys these are the manifest's @fires and
+     @cssprop lists, dozens of lines the API page already shows. */
+  .twoslash-floating :global(.twoslash-popup-docs-tags) {
+    display: none;
+  }
+
   :global(pre .twoslash-popup-container) {
     display: none;
   }

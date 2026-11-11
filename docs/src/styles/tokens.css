@@ -83,27 +83,12 @@
     --toc-width: 13rem;
     --menu-max-height: 70vh;
     --shell-max: 84rem;
+    --card-min: 16rem;
     --hairline: 1px solid var(--color-edge);
     --focus-ring: 2px solid var(--color-accent);
     --code-size: 0.875em;
     --shadow-pop: 0 0.75rem 2.5rem
       color-mix(in oklch, var(--color-ink) 18%, transparent);
-
-    /* Twoslash's hover popups, in the site's colours. */
-    --twoslash-popup-bg: var(--color-raised);
-    --twoslash-popup-color: var(--color-ink);
-    --twoslash-popup-shadow: var(--shadow-pop);
-    --twoslash-border-color: var(--color-edge);
-    --twoslash-underline-color: var(--color-ink-dim);
-    --twoslash-highlighted-border: var(--color-accent);
-    --twoslash-highlighted-bg: var(--color-accent-soft);
-    --twoslash-docs-color: var(--color-ink-dim);
-    --twoslash-docs-font: var(--font-body);
-    --twoslash-code-font: var(--font-mono);
-    --twoslash-error-color: var(--color-warn);
-    --twoslash-cursor-color: var(--color-accent);
-    --twoslash-matched-color: var(--color-accent);
-    --twoslash-unmatched-color: var(--color-ink-dim);
   }
 
   :root[data-theme='dark'] {

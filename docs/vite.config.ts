@@ -8,44 +8,13 @@ import {vitePreprocess} from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
 import {escapeSvelte, mdsvex, type MdsvexOptions} from 'mdsvex';
 import rehypeSlug from 'rehype-slug';
+import type {Root} from 'hast';
+import {visit} from 'unist-util-visit';
 import {defineConfig, type Plugin} from 'vite';
 
 import {highlight} from './highlight.ts';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-
-const mdsvexOptions: MdsvexOptions = {
-  extensions: ['.md'],
-  highlight: {
-    highlighter: async (code, lang, meta) =>
-      `{@html \`${escapeSvelte(await highlight(code, lang, meta))}\`}`,
-  },
-  rehypePlugins: [rehypeSlug],
-};
-
-const QUERY = '?highlight';
-
-/**
- * `import html from './file.ts?highlight'` gives the file as highlighted
- * HTML, so an example page shows the very module it runs.
- */
-function highlightImports(): Plugin {
-  return {
-    name: 'ninja-docs:highlight',
-    enforce: 'pre',
-    async load(id) {
-      if (!id.endsWith(QUERY)) return;
-      const file = id.slice(0, -QUERY.length);
-      this.addWatchFile(file);
-      const html = await highlight(
-        await readFile(file, 'utf8'),
-        path.extname(file).slice(1),
-        undefined
-      );
-      return `export default ${JSON.stringify(html)};`;
-    },
-  };
-}
 
 // SvelteKit wants `paths.base` empty or root-relative. BASE_PATH comes from
 // the Pages workflow; a malformed value fails here instead of shipping a site
@@ -57,6 +26,67 @@ function basePath(): '' | `/${string}` {
   throw new Error(
     `BASE_PATH must be empty or start with "/", got ${JSON.stringify(base)}`
   );
+}
+
+const BASE = basePath();
+
+/**
+ * Markdown links are written from the site root (`/docs/guide/search`);
+ * this puts the base path in front, so they work when the site is served
+ * from a subfolder. The prerender crawl fails the build on any that break.
+ */
+function prefixLinks(tree: Root): void {
+  visit(tree, 'element', (node) => {
+    const href = node.properties['href'];
+    if (typeof href === 'string' && /^\/(?!\/)/.test(href)) {
+      node.properties['href'] = `${BASE}${href}`;
+    }
+  });
+}
+
+const rehypeBaseLinks = () => prefixLinks;
+
+const mdsvexOptions: MdsvexOptions = {
+  extensions: ['.md'],
+  highlight: {
+    highlighter: async (code, lang, meta) =>
+      `{@html \`${escapeSvelte(await highlight(code, lang, meta))}\`}`,
+  },
+  rehypePlugins: [rehypeSlug, rehypeBaseLinks],
+};
+
+const QUERY = '?highlight';
+const VIRTUAL = '\0highlight:';
+// Ends the id in .js: an id ending in .css is CSS to Vite, virtual or not.
+const SUFFIX = '.highlight.js';
+
+/**
+ * `import html from './file.ts?highlight'` gives the file as highlighted
+ * HTML, so an example page shows the very module it runs. The import is
+ * resolved to a virtual id, so no other plugin (Vite's CSS pipeline, for a
+ * stylesheet) takes the file for its own.
+ */
+function highlightImports(): Plugin {
+  return {
+    name: 'ninja-docs:highlight',
+    enforce: 'pre',
+    async resolveId(source, importer) {
+      if (!source.endsWith(QUERY)) return;
+      const file = await this.resolve(source.slice(0, -QUERY.length), importer);
+      return file ? `${VIRTUAL}${file.id}${SUFFIX}` : undefined;
+    },
+    async load(id) {
+      if (!id.startsWith(VIRTUAL)) return;
+      const file = id.slice(VIRTUAL.length, -SUFFIX.length);
+      this.addWatchFile(file);
+      const html = await highlight(
+        await readFile(file, 'utf8'),
+        path.extname(file).slice(1),
+        undefined
+      );
+      return `export default ${JSON.stringify(html)};`;
+    },
+  };
 }
 
 // The library and catsearch are linked from outside this directory; the dev
@@ -85,7 +115,7 @@ export default defineConfig({
         fallback: '404.html',
         strict: true,
       }),
-      paths: {base: basePath()},
+      paths: {base: BASE},
       prerender: {handleHttpError: 'fail', handleMissingId: 'fail'},
     }),
   ],
