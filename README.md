@@ -6,10 +6,11 @@ Keyboard shortcut interface for your website that works with Vanilla JS, Vue, an
 ![npm](https://img.shields.io/npm/v/ninja-keys)
 ![npm](https://img.shields.io/npm/dw/ninja-keys)
 
-## Demo
+## Documentation
 
-[https://ninja-keys-demo.vercel.app/](https://ninja-keys-demo.vercel.app/)
-![Demo](./docs/demo-min.gif)
+[kaierikniermann.github.io/ninja-keys](https://kaierikniermann.github.io/ninja-keys/): installation, a guide, an API reference generated from the source, and live examples from a basic palette to field queries. The site's own search is ninja-keys with the catsearch searcher.
+
+![Demo](./docs/static/demo-min.gif)
 
 ## Motivation
 
@@ -227,6 +228,8 @@ Component wide events
 | `open`     | Emitted when the palette becomes visible, however it was opened | none                                                              |
 | `close`    | Emitted when the palette is hidden, however it was closed (method, hotkey, Escape, overlay click, action) | none |
 
+The events are typed: `ninja.addEventListener('selected', (e) => e.detail.action)` needs no cast (`NinjaKeysEventMap`, `NinjaChangeDetail` and `NinjaSelectedDetail` are exported).
+
 Both `handler` of action and component event `selected` emitted when user submit form or select item.
 
 But event `selected` can be used to handle edge cases, so it's not recommended to write each action logic here. It’s better to use the action `handler` property.
@@ -305,7 +308,7 @@ ninja.searcher = catsearchSearcher<Doc>({
 // kind:page updated:>=2026 under.title:rendering
 ```
 
-`examples/docs-search` is a docs tree four levels deep searched both ways: `npm run example`.
+The [field queries](https://kaierikniermann.github.io/ninja-keys/examples/field-queries) and [query cookbook](https://kaierikniermann.github.io/ninja-keys/examples/query-cookbook) examples run both on a live palette.
 
 ## Themes
 
@@ -446,6 +449,8 @@ ninja-keys {
 ```bash
 npm run start
 ```
+
+The docs site lives in `docs/` (SvelteKit); `npm --prefix docs install`, then `npm run docs`.
 
 ## Linting
 
