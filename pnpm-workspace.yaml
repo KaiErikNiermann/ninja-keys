@@ -1,0 +1,7 @@
+packages:
+  - docs
+
+# rs-module-lexer (via the custom-elements-manifest analyzer) ships a
+# prebuilt binary; its install script is not needed for `pnpm run analyze`.
+ignoredBuiltDependencies:
+  - rs-module-lexer

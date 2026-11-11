@@ -11,11 +11,11 @@
     "./catsearch": "./dist/catsearch.js"
   },
   "scripts": {
-    "start": "npm run build && concurrently -k -r \"npm run serve\" \"npm run build:watch\"",
+    "start": "pnpm run build && concurrently -k -r \"pnpm run serve\" \"pnpm run build:watch\"",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "clean": "rimraf dist/",
-    "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
+    "lint": "pnpm run lint:lit-analyzer && pnpm run lint:eslint",
     "lint:eslint": "eslint .",
     "lint:lit-analyzer": "lit-analyzer",
     "format": "prettier \"**/*.{cjs,html,js,json,md,ts}\" --write",
@@ -23,17 +23,17 @@
     "analyze": "cem analyze",
     "analyze:watch": "cem analyze --watch",
     "serve": "wds --root-dir=. --node-resolve --watch",
-    "docs": "npm --prefix docs run dev",
-    "serve:prod": "MODE=prod npm run serve",
-    "bundle": "npm run build && rollup -c --file dist/ninja-keys.bundled.js",
+    "docs": "pnpm --dir docs run dev",
+    "serve:prod": "MODE=prod pnpm run serve",
+    "bundle": "pnpm run build && rollup -c --file dist/ninja-keys.bundled.js",
     "checksize": "rollup -c ; cat dist/ninja-keys.bundled.js | gzip -9 | wc -c ; rm dist/ninja-keys.bundled.js",
     "test": "wtr --node-resolve",
     "test:watch": "wtr --node-resolve --watch",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
     "publish": "clean-publish",
     "publish-test": "rimraf package && clean-publish --without-publish --temp-dir package",
     "prepare": "husky",
-    "docs:build": "npm --prefix docs run build"
+    "docs:build": "pnpm --dir docs run build"
   },
   "keywords": [
     "web-components",
@@ -104,5 +104,6 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.55.0"
   },
-  "customElements": "custom-elements.json"
+  "customElements": "custom-elements.json",
+  "packageManager": "pnpm@10.32.1"
 }

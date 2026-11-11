@@ -5,22 +5,22 @@
   "description": "The ninja-keys documentation site",
   "type": "module",
   "scripts": {
-    "library": "npm --prefix .. run build && npm --prefix .. run analyze",
+    "library": "pnpm --dir .. run build && pnpm --dir .. run analyze",
     "api": "typedoc --options typedoc.config.mjs",
-    "predev": "npm run library && npm run api",
+    "predev": "pnpm run library && pnpm run api",
     "dev": "vite dev",
-    "prebuild": "npm run library && npm run api",
+    "prebuild": "pnpm run library && pnpm run api",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "npm run api && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
-    "lint": "prettier --check . && eslint . --max-warnings=0 && stylelint \"src/**/*.css\" && npm run lint:semgrep",
+    "check": "pnpm run api && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
+    "lint": "prettier --check . && eslint . --max-warnings=0 && stylelint \"src/**/*.css\" && pnpm run lint:semgrep",
     "lint:semgrep": "cd .lint && EIO_BACKEND=posix poetry run semgrep --config ../.semgrep --error --quiet --exclude theming.css ../src",
     "format": "prettier --write .",
-    "verify": "npm run library && npm run check && npm run lint && npm run build"
+    "verify": "pnpm run library && pnpm run check && pnpm run lint && pnpm run build"
   },
   "dependencies": {
     "catsearch": "file:../../../python-tools/textual-catsearch/js",
-    "ninja-keys": "file:.."
+    "ninja-keys": "workspace:*"
   },
   "devDependencies": {
     "@eslint/css": "^2.0.1",

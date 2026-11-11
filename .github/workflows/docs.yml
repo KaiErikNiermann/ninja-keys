@@ -17,25 +17,22 @@ jobs:
         with:
           # TypeDoc links each API entry to its source at this commit.
           fetch-depth: 0
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            docs/package-lock.json
-      - run: npm ci
-      - run: npm ci
+          cache: pnpm
+      # One install for the workspace: the library and docs/.
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run library && pnpm run check
         working-directory: docs
-      - run: npm run library && npm run check
-        working-directory: docs
-      - run: npx prettier --check . && npx eslint . --max-warnings=0 && npx stylelint "src/**/*.css"
+      - run: pnpm exec prettier --check . && pnpm exec eslint . --max-warnings=0 && pnpm exec stylelint "src/**/*.css"
         working-directory: docs
       # Built under the base path Pages serves it from, so a link that only
       # breaks outside the domain root fails here. The prerender crawl fails
       # on any broken internal link or #fragment, and twoslash on any code
       # block that does not type-check.
-      - run: npm run build
+      - run: pnpm run build
         working-directory: docs
         env:
           BASE_PATH: /${{ github.event.repository.name }}

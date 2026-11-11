@@ -1,5 +1,5 @@
-npm run build && npm run lint && npm test
+pnpm run build && pnpm run lint && pnpm test
 
 # The docs site type-checks its code blocks against the library, so a
 # change to the library can break it; check and build it too.
-npm --prefix docs run check && npm --prefix docs run lint && npm --prefix docs run build
+pnpm --dir docs run check && pnpm --dir docs run lint && pnpm --dir docs run build
