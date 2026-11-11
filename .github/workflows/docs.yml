@@ -1,10 +1,22 @@
 name: Docs
 
+# The site, and the library it documents: every code block on it is
+# type-checked against src/, and the API page is generated from it.
 on:
   push:
     branches: [main]
+    paths: &paths
+      - 'docs/**'
+      - 'src/**'
+      - 'tsconfig.json'
+      - 'custom-elements-manifest.config.mjs'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/docs.yml'
   pull_request:
     branches: [main]
+    paths: *paths
 
 permissions:
   contents: read

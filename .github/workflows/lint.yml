@@ -1,10 +1,30 @@
 name: Lint
 
+# Library, tooling and anything carrying a pinned version (README.md and
+# the docs pages: `pnpm run lint` runs the version check).
 on:
   push:
     branches: [main]
+    paths: &paths
+      - 'src/**'
+      - 'scripts/**'
+      - 'dev/**'
+      - 'tsconfig*.json'
+      - '*.config.js'
+      - '*.config.mjs'
+      - '.prettierrc.json'
+      - '.prettierignore'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'docs/src/**/*.md'
+      - 'docs/src/**/*.svelte'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/lint.yml'
   pull_request:
     branches: [main]
+    paths: *paths
 
 permissions:
   contents: read

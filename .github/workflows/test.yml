@@ -1,10 +1,20 @@
 name: Test
 
+# Only library changes run the tests; a docs-only change does not.
 on:
   push:
     branches: [main]
+    paths: &paths
+      - 'src/**'
+      - 'tsconfig.json'
+      - 'web-test-runner.config.js'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/test.yml'
   pull_request:
     branches: [main]
+    paths: *paths
 
 permissions:
   contents: read
