@@ -6,3 +6,5 @@ src/lib/api/typedoc.json
 .semgrep
 .lint
 static
+# mdsvex pages: reflowed HTML inside components changes how they parse
+*.md
