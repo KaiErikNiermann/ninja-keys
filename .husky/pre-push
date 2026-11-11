@@ -1,1 +1,5 @@
 npm run build && npm run lint && npm test
+
+# The docs site type-checks its code blocks against the library, so a
+# change to the library can break it; check and build it too.
+npm --prefix docs run check && npm --prefix docs run lint && npm --prefix docs run build

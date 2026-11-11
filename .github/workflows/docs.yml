@@ -1,0 +1,62 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # TypeDoc links each API entry to its source at this commit.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            docs/package-lock.json
+      - run: npm ci
+      - run: npm ci
+        working-directory: docs
+      - run: npm run library && npm run check
+        working-directory: docs
+      - run: npx prettier --check . && npx eslint . --max-warnings=0 && npx stylelint "src/**/*.css"
+        working-directory: docs
+      # Built under the base path Pages serves it from, so a link that only
+      # breaks outside the domain root fails here. The prerender crawl fails
+      # on any broken internal link or #fragment, and twoslash on any code
+      # block that does not type-check.
+      - run: npm run build
+        working-directory: docs
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name == 'push'
+        with:
+          path: docs/build
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
