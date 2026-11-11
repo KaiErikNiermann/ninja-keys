@@ -1,5 +1,9 @@
 set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
+# The fork on GitHub. gh needs it named: in a fork it cannot tell this
+# repository from upstream without `gh repo set-default`.
+repo := "KaiErikNiermann/ninja-keys"
+
 # List recipes
 default:
     @just --list
@@ -144,9 +148,9 @@ gh-release notes="":
     set -euo pipefail
     tag="v$(node -p "require('./package.json').version")"
     if [ -n "{{ notes }}" ]; then
-      gh release create "$tag" --title "$tag" --notes-file "{{ notes }}"
+      gh release create "$tag" -R {{ repo }} --title "$tag" --notes-file "{{ notes }}"
     else
-      gh release create "$tag" --title "$tag" --notes "" --draft
+      gh release create "$tag" -R {{ repo }} --title "$tag" --notes "" --draft
       echo "Created $tag as a draft: write its notes on GitHub, then publish it (that publishes to npm)."
     fi
 
@@ -187,8 +191,8 @@ publish tag="":
     set -euo pipefail
     tag="{{ tag }}"
     tag="${tag:-v$(node -p "require('./package.json').version")}"
-    gh workflow run publish.yml -f tag="$tag"
-    echo "Started the Publish workflow for $tag: gh run watch, or the Actions tab"
+    gh workflow run publish.yml -R {{ repo }} -f tag="$tag"
+    echo "Started the Publish workflow for $tag: gh run watch -R {{ repo }}, or the Actions tab"
 
 # Publish from this machine instead of CI (asks for your 2FA code if enabled)
 publish-local:
