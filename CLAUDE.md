@@ -14,7 +14,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `npm run format` | Prettier format all files |
 | `npm test` | Run tests via @web/test-runner |
 | `npm run test:watch` | Run tests in watch mode |
-| `npm run demo` | Compile, bundle, and serve demo from `docs/` |
+| `npm run docs` | Build the library and start the docs site dev server (`docs/`, SvelteKit) |
+| `npm --prefix docs run verify` | Docs: build library, type-check, lint (prettier/eslint/stylelint/semgrep), build site |
 | `npm run checksize` | Check minified gzip size of bundle |
 
 Tests require `npm run build` first (they run against `dist/`).
