@@ -60,7 +60,14 @@ jobs:
       # npm, not pnpm, publishes: it is npm that speaks OIDC to the registry.
       - name: Publish
         run: |
+          name=$(node -p "require('./package.json').name")
           version=$(node -p "require('./package.json').version")
+          # npm never accepts a version twice; a rerun or a version published
+          # by hand is a no-op rather than a failure.
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "::notice::$name@$version is already on npm; nothing to publish"
+            exit 0
+          fi
           if [[ "$version" == *-* ]]; then
             npm publish --tag next
           else
