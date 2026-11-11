@@ -17,24 +17,24 @@ ninja-keys is one custom element, `<ninja-keys>`, built with Lit. It has two run
 ```bash
 git clone https://github.com/KaiErikNiermann/ninja-keys.git
 cd ninja-keys
-npm ci
-npm run build
+pnpm install
+pnpm run build
 ```
 
 Then, in your project:
 
 ```bash
-npm install ../ninja-keys
+pnpm add ../ninja-keys    # or: npm install ../ninja-keys
 ```
 
-npm links the folder, so a later `npm run build` there is picked up without reinstalling.
+Both link the folder, so a later `pnpm run build` there is picked up without reinstalling.
 
 ## From npm
 
 Once published, it installs like any package:
 
 ```bash
-npm install ninja-keys
+pnpm add ninja-keys    # or: npm install ninja-keys
 ```
 
 ## Import it
@@ -72,7 +72,7 @@ Pin a version in the URL for anything you ship. Until this fork is published, th
 The [field query searcher](/docs/guide/catsearch) lives at `ninja-keys/catsearch` and is built on the [catsearch](https://github.com/KaiErikNiermann/textual-catsearch/tree/main/js) package. catsearch is an optional peer dependency: install it next to ninja-keys only if you use that searcher. The main entry never loads it.
 
 ```bash
-npm install catsearch
+pnpm add catsearch    # or: npm install catsearch
 ```
 
 catsearch is not on npm yet either; its repository builds the same way, from its `js/` folder.

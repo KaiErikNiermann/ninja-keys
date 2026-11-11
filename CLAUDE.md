@@ -6,19 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | Command | Purpose |
 |---------|---------|
-| `npm start` | Build + serve + watch (full dev environment) |
-| `npm run build` | Compile TypeScript (`tsc`) to `dist/` |
-| `npm run bundle` | Build + Rollup bundle → `dist/ninja-keys.bundled.js` |
-| `npm run lint` | Run lit-analyzer + ESLint |
-| `npm run lint:eslint` | ESLint only (`src/**/*.ts`) |
-| `npm run format` | Prettier format all files |
-| `npm test` | Run tests via @web/test-runner |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run docs` | Build the library and start the docs site dev server (`docs/`, SvelteKit) |
-| `npm --prefix docs run verify` | Docs: build library, type-check, lint (prettier/eslint/stylelint/semgrep), build site |
-| `npm run checksize` | Check minified gzip size of bundle |
+| `pnpm start` | Build + serve + watch (full dev environment) |
+| `pnpm run build` | Compile TypeScript (`tsc`) to `dist/` |
+| `pnpm run bundle` | Build + Rollup bundle → `dist/ninja-keys.bundled.js` |
+| `pnpm run lint` | Run lit-analyzer + ESLint |
+| `pnpm run lint:eslint` | ESLint only (`src/**/*.ts`) |
+| `pnpm run format` | Prettier format all files |
+| `pnpm test` | Run tests via @web/test-runner |
+| `pnpm run test:watch` | Run tests in watch mode |
+| `pnpm run docs` | Build the library and start the docs site dev server (`docs/`, SvelteKit) |
+| `pnpm --dir docs run verify` | Docs: build library, type-check, lint (prettier/eslint/stylelint/semgrep), build site |
+| `pnpm run checksize` | Check minified gzip size of bundle |
 
-Tests require `npm run build` first (they run against `dist/`).
+Tests require `pnpm run build` first (they run against `dist/`).
 
 ## Architecture
 
@@ -49,6 +49,8 @@ TypeScript → `dist/*.js` (ESM, with `.d.ts` declarations) → Rollup bundles t
 - `.` → `dist/ninja-keys.js` (main component)
 - `./ninja-header` → `dist/ninja-header.js` (header component)
 - ESM only (`"type": "module"`)
+
+Package manager: pnpm (workspace: the library at the root, the docs site in `docs/`).
 
 ## Code Style
 

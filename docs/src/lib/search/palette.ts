@@ -123,13 +123,13 @@ export function siteActions(
     })),
     {
       id: 'Copy install command',
-      title: 'Copy “npm i ninja-keys”',
+      title: 'Copy “pnpm add ninja-keys”',
       kind: 'command',
       section: 'Commands',
-      keywords: 'install npm clipboard',
+      keywords: 'install pnpm npm clipboard',
       icon: icon(Copy),
       handler: () => {
-        void navigator.clipboard.writeText('npm i ninja-keys');
+        void navigator.clipboard.writeText('pnpm add ninja-keys');
       },
     },
   ];

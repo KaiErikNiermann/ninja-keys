@@ -3,7 +3,7 @@
  *
  * - `custom-elements.json` (from `cem analyze`) for what only the element
  *   has: attributes, events, the slot, shadow parts and CSS properties;
- * - TypeDoc's JSON (`npm run api`) for TypeScript types: property and
+ * - TypeDoc's JSON (`pnpm run api`) for TypeScript types: property and
  *   method signatures, functions, interfaces and type aliases.
  *
  * Both are read at build time; pages get plain data with HTML already

@@ -22,14 +22,14 @@ Run from the repository root.
 
 | Command           | Does                                                                                           |
 | ----------------- | ---------------------------------------------------------------------------------------------- |
-| `npm run build`   | compiles `src/` to `dist/` with `tsc`                                                          |
-| `npm test`        | runs the tests in a headless browser (@web/test-runner); build first, they run against `dist/` |
-| `npm run lint`    | lit-analyzer and ESLint (typescript-eslint, sonarjs, unicorn, security)                        |
-| `npm run analyze` | regenerates `custom-elements.json` from the source                                             |
-| `npm run format`  | Prettier                                                                                       |
-| `npm run docs`    | builds the library and starts this site's dev server                                           |
+| `pnpm run build`  | compiles `src/` to `dist/` with `tsc`                                                          |
+| `pnpm test`       | runs the tests in a headless browser (@web/test-runner); build first, they run against `dist/` |
+| `pnpm run lint`   | lit-analyzer and ESLint (typescript-eslint, sonarjs, unicorn, security)                        |
+| `pnpm run analyze` | regenerates `custom-elements.json` from the source                                             |
+| `pnpm run format` | Prettier                                                                                       |
+| `pnpm run docs`   | builds the library and starts this site's dev server                                           |
 
-The husky pre-push hook runs build, lint and test.
+The husky pre-push hook runs build, lint and test, then checks, lints and builds the docs site, whose code blocks compile against the library.
 
 ### Documenting a change
 
@@ -37,23 +37,23 @@ The [API reference](/api) is generated from the source, so documenting a change 
 
 - A public property, method, interface field or exported function gets a doc comment. TypeDoc and the custom elements manifest both read it.
 - An event, slot, shadow part or CSS property is declared on the `NinjaKeys` class with `@fires`, `@slot`, `@csspart` or `@cssprop` (with its default, `[--ninja-x=default]`). The manifest reads these; nothing else would know about them.
-- Run `npm run analyze` and commit the regenerated `custom-elements.json` with the change. Editors read it for completions.
+- Run `pnpm run analyze` and commit the regenerated `custom-elements.json` with the change. Editors read it for completions.
 
 ## This site
 
-The site is in `docs/`: SvelteKit with mdsvex for the Markdown pages, Tailwind 4, prerendered to static HTML. It uses the library through a `file:` link, so it always shows the current source.
+The site is in `docs/`: SvelteKit with mdsvex for the Markdown pages, Tailwind 4, prerendered to static HTML. It is a package in the repository's pnpm workspace and uses the library as `workspace:*`, so it always shows the current source.
 
 ```bash
-npm --prefix docs install
-npm run docs                    # dev server on :5175
-npm --prefix docs run verify    # build the library, type-check, lint, build the site
+pnpm install                    # the library and the site: one pnpm workspace
+pnpm run docs                   # dev server on :5175
+pnpm --dir docs run verify      # build the library, type-check, lint, build the site
 ```
 
 ### How a page is made
 
 - Guide pages are Markdown, at `src/routes/docs/**/+page.md`. Root-relative links (`/docs/guide/search`) get the deploy's base path added at build.
 - The sidebar, page titles, previous/next links and the site search all come from one list, `src/lib/nav.ts`; a new page goes there too.
-- The API page reads `../custom-elements.json` and TypeDoc's JSON of `../src` (`npm --prefix docs run api`), in `src/lib/server/api.ts`.
+- The API page reads `../custom-elements.json` and TypeDoc's JSON of `../src` (`pnpm --dir docs run api`), in `src/lib/server/api.ts`.
 - The site search index is built at prerender from the nav, each Markdown page's headings and the API, and served as `/search.json`.
 
 ### Code blocks are compiled
@@ -70,4 +70,4 @@ Each example is a module in `src/lib/examples/` whose default export sets up a p
 
 ### Checks
 
-`npm --prefix docs run lint` runs Prettier, ESLint (with `@eslint/css`), Stylelint and the principled-css semgrep rules (from a Poetry environment in `docs/.lint`). All colours, sizes and spaces in the site's CSS come from `src/styles/tokens.css`; Stylelint rejects a literal anywhere else.
+`pnpm --dir docs run lint` runs Prettier, ESLint (with `@eslint/css`), Stylelint and the principled-css semgrep rules (from a Poetry environment in `docs/.lint`). All colours, sizes and spaces in the site's CSS come from `src/styles/tokens.css`; Stylelint rejects a literal anywhere else.

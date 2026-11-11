@@ -53,7 +53,7 @@ Or because it allows your users to become keyboard ninjas 🙃
 ## Install from NPM
 
 ```bash
-npm i ninja-keys
+pnpm add ninja-keys   # or npm i ninja-keys
 ```
 
 Import if you are using webpack, rollup, vite or other build system.
@@ -447,17 +447,17 @@ ninja-keys {
 ## Dev Server
 
 ```bash
-npm run start
+pnpm run start
 ```
 
-The docs site lives in `docs/` (SvelteKit); `npm --prefix docs install`, then `npm run docs`.
+The repository is a pnpm workspace with the docs site in `docs/` (SvelteKit): `pnpm install` once, then `pnpm run docs`.
 
 ## Linting
 
 To lint the project run:
 
 ```bash
-npm run lint
+pnpm run lint
 ```
 
 ## Formatting
