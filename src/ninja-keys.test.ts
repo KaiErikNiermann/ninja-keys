@@ -588,15 +588,31 @@ describe('ninja-keys', () => {
     const el = await fixture<NinjaKeys>(
       html`<ninja-keys .data=${actions}></ninja-keys>`
     );
-    el.submit();
+    await el.submit();
     expect(ran).to.deep.equal([]);
     el.open({search: 'sett'});
     await el.updateComplete;
-    el.submit();
+    await el.submit();
     expect(ran).to.deep.equal(['settings']);
     el.open({search: 'no such thing'});
     await el.updateComplete;
-    el.submit();
+    await el.submit();
+    expect(ran).to.deep.equal(['settings']);
+  });
+
+  it('submit straight after open({search}) runs the new first match', async () => {
+    const ran: string[] = [];
+    const actions = sampleActions.map((a) => ({
+      ...a,
+      handler: () => ran.push(a.id),
+    }));
+    const el = await fixture<NinjaKeys>(
+      html`<ninja-keys .data=${actions}></ninja-keys>`
+    );
+    // No await between the two: the matches for 'sett' do not exist yet
+    // when submit() is called.
+    el.open({search: 'sett'});
+    await el.submit();
     expect(ran).to.deep.equal(['settings']);
   });
 });

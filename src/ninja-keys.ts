@@ -204,8 +204,14 @@ export class NinjaKeys extends LitElement {
   /**
    * Run the selected action, as Enter does: after open({search}), the
    * first match. Does nothing while closed or when nothing matches.
+   * Resolves once the action has run.
    */
-  submit() {
+  async submit(): Promise<void> {
+    // The matches are worked out when the element renders, so after a
+    // change made in the same task (open({search}), new data) they are
+    // stale until the update has run. Wait for it rather than run whatever
+    // matched before.
+    await this.updateComplete;
     if (!this.visible) {
       return;
     }

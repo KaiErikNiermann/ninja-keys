@@ -755,7 +755,12 @@
             {
               "kind": "method",
               "name": "submit",
-              "description": "Run the selected action, as Enter does: after open({search}), the\nfirst match. Does nothing while closed or when nothing matches."
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "description": "Run the selected action, as Enter does: after open({search}), the\nfirst match. Does nothing while closed or when nothing matches.\nResolves once the action has run."
             },
             {
               "kind": "method",
