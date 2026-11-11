@@ -93,9 +93,7 @@ export type {INinjaAction} from './interfaces/ininja-action.js';
 export class NinjaKeys extends LitElement {
   static override readonly styles = [baseStyles];
 
-  /**
-   * Search placeholder text
-   */
+  /** Placeholder of the search input. */
   @property({type: String}) placeholder = 'Type a command or search...';
 
   /**
@@ -104,55 +102,53 @@ export class NinjaKeys extends LitElement {
    */
   @property({type: Boolean}) disableHotkeys = false;
 
-  /**
-   * Show or hide breadcrumbs on header
-   */
+  /** Hide the breadcrumb row above the input that shows the open menu. */
   @property({type: Boolean}) hideBreadcrumbs = false;
 
   /**
-   * Open or hide shorcut
+   * Opens the palette, or closes it when open. Any hotkeys-js key list;
+   * an empty string binds no key, for a palette opened only by `open()`.
    */
   @property() openHotkey = 'cmd+k,ctrl+k';
 
-  /**
-   * Navigation Up hotkey
-   */
+  /** Moves the selection up, wrapping at the top. */
   @property() navigationUpHotkey = 'up,shift+tab';
 
   /**
-   * Navigation Down hotkey
+   * Moves the selection down, wrapping at the bottom. While the searcher
+   * offers completions, Tab takes the first instead.
    */
   @property() navigationDownHotkey = 'down,tab';
 
-  /**
-   * Close hotkey
-   */
+  /** Closes the palette. */
   @property() closeHotkey = 'esc';
 
-  /**
-   * Go back on one level if has parent menu
-   */
+  /** Goes up one menu level, when the search box is empty. */
   @property() goBackHotkey = 'backspace';
 
   /**
-   * Select action and execute handler or open submenu
+   * Chooses the selected action: runs its handler, or opens its menu. With
+   * nothing selected it still fires `selected`, with no action.
    */
-  @property() selectHotkey = 'enter'; // enter,space
+  @property() selectHotkey = 'enter';
 
   /**
-   * Show or hide breadcrumbs on header
+   * Show an action's hotkey as one badge (`ctrl+n`) rather than a badge per
+   * key.
    */
   @property({type: Boolean}) hotKeysJoinedView = false;
 
   /**
-   * Disable load material icons font on connect
-   * If you use custom icons.
-   * Set this attribute to prevent load default icons font
+   * Do not add the Material Icons stylesheet from Google Fonts to the page
+   * on connect. Set it when the actions use `icon` rather than `mdIcon`, or
+   * when the page loads the font itself.
    */
   @property({type: Boolean}) noAutoLoadMdIcons = false;
 
   /**
-   * Array of actions
+   * The actions, as a flat list (children name their menu in `parent`) or
+   * a tree (menus hold their children in `children`). Assign a new array to
+   * change it; the hotkeys are rebound each time.
    */
   @property({
     type: Array,
@@ -251,9 +247,7 @@ export class NinjaKeys extends LitElement {
     this._headerRef.value?.setSearch('');
   }
 
-  /**
-   * Show or hide element
-   */
+  /** Whether the palette is open. Read it; use open() and close() to change it. */
   @state() visible = false;
   /**
    * Temproray used for animation effect. TODO: change to animate logic
@@ -277,9 +271,7 @@ export class NinjaKeys extends LitElement {
   @state()
   private _currentRoot?: string;
 
-  /**
-   * Array of actions in flat structure
-   */
+  /** `data` flattened: every action at every level, children as ids. */
   @state() _flatData = [] as Array<INinjaAction>;
 
   @state()

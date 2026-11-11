@@ -619,7 +619,7 @@
                 "text": "string"
               },
               "default": "'Type a command or search...'",
-              "description": "Search placeholder text",
+              "description": "Placeholder of the search input.",
               "attribute": "placeholder"
             },
             {
@@ -639,7 +639,7 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Show or hide breadcrumbs on header",
+              "description": "Hide the breadcrumb row above the input that shows the open menu.",
               "attribute": "hideBreadcrumbs"
             },
             {
@@ -649,7 +649,7 @@
                 "text": "string"
               },
               "default": "'cmd+k,ctrl+k'",
-              "description": "Open or hide shorcut",
+              "description": "Opens the palette, or closes it when open. Any hotkeys-js key list;\nan empty string binds no key, for a palette opened only by `open()`.",
               "attribute": "openHotkey"
             },
             {
@@ -659,7 +659,7 @@
                 "text": "string"
               },
               "default": "'up,shift+tab'",
-              "description": "Navigation Up hotkey",
+              "description": "Moves the selection up, wrapping at the top.",
               "attribute": "navigationUpHotkey"
             },
             {
@@ -669,7 +669,7 @@
                 "text": "string"
               },
               "default": "'down,tab'",
-              "description": "Navigation Down hotkey",
+              "description": "Moves the selection down, wrapping at the bottom. While the searcher\noffers completions, Tab takes the first instead.",
               "attribute": "navigationDownHotkey"
             },
             {
@@ -679,7 +679,7 @@
                 "text": "string"
               },
               "default": "'esc'",
-              "description": "Close hotkey",
+              "description": "Closes the palette.",
               "attribute": "closeHotkey"
             },
             {
@@ -689,7 +689,7 @@
                 "text": "string"
               },
               "default": "'backspace'",
-              "description": "Go back on one level if has parent menu",
+              "description": "Goes up one menu level, when the search box is empty.",
               "attribute": "goBackHotkey"
             },
             {
@@ -699,7 +699,7 @@
                 "text": "string"
               },
               "default": "'enter'",
-              "description": "Select action and execute handler or open submenu",
+              "description": "Chooses the selected action: runs its handler, or opens its menu. With\nnothing selected it still fires `selected`, with no action.",
               "attribute": "selectHotkey"
             },
             {
@@ -709,7 +709,7 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Show or hide breadcrumbs on header",
+              "description": "Show an action's hotkey as one badge (`ctrl+n`) rather than a badge per\nkey.",
               "attribute": "hotKeysJoinedView"
             },
             {
@@ -719,14 +719,14 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Disable load material icons font on connect\nIf you use custom icons.\nSet this attribute to prevent load default icons font",
+              "description": "Do not add the Material Icons stylesheet from Google Fonts to the page\non connect. Set it when the actions use `icon` rather than `mdIcon`, or\nwhen the page loads the font itself.",
               "attribute": "noAutoLoadMdIcons"
             },
             {
               "kind": "field",
               "name": "data",
               "default": "[]",
-              "description": "Array of actions",
+              "description": "The actions, as a flat list (children name their menu in `parent`) or\na tree (menus hold their children in `children`). Assign a new array to\nchange it; the hotkeys are rebound each time.",
               "attribute": "data"
             },
             {
@@ -798,7 +798,7 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Show or hide element"
+              "description": "Whether the palette is open. Read it; use open() and close() to change it."
             },
             {
               "kind": "field",
@@ -856,7 +856,7 @@
               "kind": "field",
               "name": "_flatData",
               "default": "[]",
-              "description": "Array of actions in flat structure"
+              "description": "`data` flattened: every action at every level, children as ids."
             },
             {
               "kind": "field",
@@ -1125,7 +1125,7 @@
                 "text": "string"
               },
               "default": "'Type a command or search...'",
-              "description": "Search placeholder text",
+              "description": "Placeholder of the search input.",
               "fieldName": "placeholder"
             },
             {
@@ -1143,7 +1143,7 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Show or hide breadcrumbs on header",
+              "description": "Hide the breadcrumb row above the input that shows the open menu.",
               "fieldName": "hideBreadcrumbs"
             },
             {
@@ -1152,7 +1152,7 @@
                 "text": "string"
               },
               "default": "'cmd+k,ctrl+k'",
-              "description": "Open or hide shorcut",
+              "description": "Opens the palette, or closes it when open. Any hotkeys-js key list;\nan empty string binds no key, for a palette opened only by `open()`.",
               "fieldName": "openHotkey"
             },
             {
@@ -1161,7 +1161,7 @@
                 "text": "string"
               },
               "default": "'up,shift+tab'",
-              "description": "Navigation Up hotkey",
+              "description": "Moves the selection up, wrapping at the top.",
               "fieldName": "navigationUpHotkey"
             },
             {
@@ -1170,7 +1170,7 @@
                 "text": "string"
               },
               "default": "'down,tab'",
-              "description": "Navigation Down hotkey",
+              "description": "Moves the selection down, wrapping at the bottom. While the searcher\noffers completions, Tab takes the first instead.",
               "fieldName": "navigationDownHotkey"
             },
             {
@@ -1179,7 +1179,7 @@
                 "text": "string"
               },
               "default": "'esc'",
-              "description": "Close hotkey",
+              "description": "Closes the palette.",
               "fieldName": "closeHotkey"
             },
             {
@@ -1188,7 +1188,7 @@
                 "text": "string"
               },
               "default": "'backspace'",
-              "description": "Go back on one level if has parent menu",
+              "description": "Goes up one menu level, when the search box is empty.",
               "fieldName": "goBackHotkey"
             },
             {
@@ -1197,7 +1197,7 @@
                 "text": "string"
               },
               "default": "'enter'",
-              "description": "Select action and execute handler or open submenu",
+              "description": "Chooses the selected action: runs its handler, or opens its menu. With\nnothing selected it still fires `selected`, with no action.",
               "fieldName": "selectHotkey"
             },
             {
@@ -1206,7 +1206,7 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Show or hide breadcrumbs on header",
+              "description": "Show an action's hotkey as one badge (`ctrl+n`) rather than a badge per\nkey.",
               "fieldName": "hotKeysJoinedView"
             },
             {
@@ -1215,13 +1215,13 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Disable load material icons font on connect\nIf you use custom icons.\nSet this attribute to prevent load default icons font",
+              "description": "Do not add the Material Icons stylesheet from Google Fonts to the page\non connect. Set it when the actions use `icon` rather than `mdIcon`, or\nwhen the page loads the font itself.",
               "fieldName": "noAutoLoadMdIcons"
             },
             {
               "name": "data",
               "default": "[]",
-              "description": "Array of actions",
+              "description": "The actions, as a flat list (children name their menu in `parent`) or\na tree (menus hold their children in `children`). Assign a new array to\nchange it; the hotkeys are rebound each time.",
               "fieldName": "data"
             }
           ],

@@ -16,9 +16,13 @@ export interface SearchContext {
  * `search` and puts the caret at `cursor` (the end when omitted).
  */
 export interface SearchSuggestion {
+  /** What the chip shows, such as `section:`. */
   readonly label: string;
+  /** A hint shown dimmed beside the label. */
   readonly detail?: string;
+  /** The whole search text after taking the completion. */
   readonly search: string;
+  /** Where the caret goes in `search`; the end when omitted. */
   readonly cursor?: number;
 }
 
