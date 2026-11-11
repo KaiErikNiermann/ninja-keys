@@ -9,3 +9,4 @@ node_modules/
 CLAUDE.md
 .playwright-mcp/
 LOG.md
+.scratch/
