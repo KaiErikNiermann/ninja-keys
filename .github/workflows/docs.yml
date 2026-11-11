@@ -17,7 +17,7 @@ jobs:
         with:
           # TypeDoc links each API entry to its source at this commit.
           fetch-depth: 0
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
