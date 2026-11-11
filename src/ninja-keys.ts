@@ -346,7 +346,7 @@ export class NinjaKeys extends LitElement {
         return m;
       }
 
-      const nested = (m.children ?? []) as unknown as INinjaAction[];
+      const nested = (m.children ?? []) as INinjaAction[];
       if (nested.length > 0) {
         descendants.push(...this._flattern(nested, m.id));
       }

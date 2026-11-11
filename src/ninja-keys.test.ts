@@ -30,12 +30,12 @@ const nestedActions: INinjaAction[] = [
     children: [
       {id: 'new-file', title: 'New File'},
       {id: 'open-file', title: 'Open File'},
-    ] as unknown as string[],
+    ],
   },
   {
     id: 'edit',
     title: 'Edit',
-    children: [{id: 'copy', title: 'Copy'}] as unknown as string[],
+    children: [{id: 'copy', title: 'Copy'}],
   },
   {id: 'quit', title: 'Quit'},
 ];

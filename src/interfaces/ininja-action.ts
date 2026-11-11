@@ -7,6 +7,11 @@ export interface INinjaAction {
   icon?: string;
   parent?: string;
   keywords?: string;
-  children?: string[];
+  /**
+   * The menu this action opens: the ids of its children in a flat list, or
+   * the child actions themselves in a tree. ninja-keys flattens a tree into
+   * ids, so a searcher always sees ids.
+   */
+  children?: string[] | INinjaAction[];
   section?: string;
 }
