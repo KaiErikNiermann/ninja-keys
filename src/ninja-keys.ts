@@ -29,6 +29,66 @@ export type {
 export {defaultSearcher, groupBySection} from './searcher.js';
 export type {INinjaAction} from './interfaces/ininja-action.js';
 
+/**
+ * A keyboard command palette: a modal list of actions, opened with a hotkey,
+ * searched as you type, with nested menus and per-action hotkeys.
+ *
+ * @fires change - On every change of the search text. `detail` is
+ *   `{search: string, actions: INinjaAction[]}`, the actions now shown.
+ * @fires selected - When an action is chosen, or Enter is pressed with
+ *   nothing to choose. `detail` is `{search: string, action?: INinjaAction}`.
+ * @fires open - When the palette becomes visible, however it was opened.
+ * @fires close - When the palette is hidden, however it was closed: a
+ *   method, a hotkey, Escape, a click on the overlay, or an action.
+ *
+ * @slot footer - Replaces the key-hint footer; an empty element hides it.
+ *
+ * @csspart actions-list - The scrolling list that holds every action.
+ * @csspart ninja-action - One action row.
+ * @csspart ninja-selected - The selected action row.
+ * @csspart ninja-icon - An action's Material icon.
+ * @csspart ninja-input - The search input.
+ * @csspart ninja-input-wrapper - The element around the search input.
+ * @csspart ninja-search-hint - The line under the input holding a
+ *   searcher's completions and notice.
+ * @csspart ninja-suggestion - One completion chip.
+ * @csspart ninja-notice - A searcher's notice.
+ *
+ * @cssprop [--ninja-width=640px] - Width of the palette.
+ * @cssprop [--ninja-top=20%] - Distance from the top of the viewport.
+ * @cssprop [--ninja-font-size=16px] - Base size every other size scales from.
+ * @cssprop [--ninja-font-family=inherit] - Font of the palette.
+ * @cssprop [--ninja-code-font-family=ui-monospace, monospace] - Font of
+ *   completion chips.
+ * @cssprop [--ninja-z-index=1] - Stacking order of the overlay.
+ * @cssprop [--ninja-backdrop-filter=none] - Filter behind the overlay, such
+ *   as `blur(4px)`.
+ * @cssprop [--ninja-overflow-background=rgba(255, 255, 255, 0.5)] - The
+ *   overlay over the page.
+ * @cssprop [--ninja-modal-background=#fff] - Background of the palette.
+ * @cssprop [--ninja-modal-shadow=rgb(0 0 0 / 50%) 0px 16px 70px] - Shadow of
+ *   the palette.
+ * @cssprop [--ninja-text-color=rgb(60, 65, 73)] - Text.
+ * @cssprop [--ninja-accent-color=rgb(110, 94, 210)] - Caret, selection
+ *   bar and focused chips.
+ * @cssprop [--ninja-secondary-text-color=rgb(107, 111, 118)] - Hints, keys
+ *   and breadcrumbs.
+ * @cssprop [--ninja-secondary-background-color=rgb(239, 241, 244)] - Key
+ *   badges, breadcrumbs and chips.
+ * @cssprop [--ninja-selected-background=rgb(248, 249, 251)] - The selected
+ *   row.
+ * @cssprop [--ninja-selected-text-color=inherit] - Text of the selected row.
+ * @cssprop [--ninja-placeholder-color=#8e8e8e] - Placeholder of the input.
+ * @cssprop [--ninja-group-text-color=rgb(144, 149, 157)] - Section headers.
+ * @cssprop [--ninja-icon-color=var(--ninja-secondary-text-color)] - Icons.
+ * @cssprop [--ninja-icon-size=1.2em] - Icons.
+ * @cssprop [--ninja-key-border-radius=0.25em] - Key badges, breadcrumbs and
+ *   chips.
+ * @cssprop [--ninja-separate-border=1px solid var(--ninja-secondary-background-color)] -
+ *   Lines between the input, the list and the footer.
+ * @cssprop [--ninja-actions-height=300px] - Maximum height of the list.
+ * @cssprop [--ninja-footer-background=rgba(242, 242, 242, 0.4)] - The footer.
+ */
 @customElement('ninja-keys')
 export class NinjaKeys extends LitElement {
   static override readonly styles = [baseStyles];
