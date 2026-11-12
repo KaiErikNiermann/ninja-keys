@@ -1,5 +1,7 @@
 # Ninja Keys
 
+[![npm](https://img.shields.io/npm/v/@appulsauce/ninja-keys)](https://www.npmjs.com/package/@appulsauce/ninja-keys)
+
 Keyboard shortcut interface for your website that works with Vanilla JS, Vue, and React.
 
 This is a maintained fork of [ssleptsov/ninja-keys](https://github.com/ssleptsov/ninja-keys), published as `@appulsauce/ninja-keys`: Lit 3, a pluggable search with a field query language, typed events, `open({search})` and `submit()`, and hotkey fixes. The element is still `<ninja-keys>`; moving over from `ninja-keys` is a change of import path.
