@@ -95,7 +95,7 @@
     "@web/dev-server": "^0.4.6",
     "@web/test-runner": "^0.20.2",
     "catsearch": "^0.1.0",
-    "concurrently": "^10.0.3",
+    "concurrently": "^10.0.7",
     "eslint": "^9.39.0",
     "eslint-plugin-security": "^4.0.1",
     "eslint-plugin-sonarjs": "^4.2.0",
