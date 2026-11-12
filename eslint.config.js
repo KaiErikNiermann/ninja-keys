@@ -105,6 +105,7 @@ export default tseslint.config(
       '.remember/**',
       '.serena/**',
       '.claude/**',
+      '.scratch/**',
     ],
   }
 );
