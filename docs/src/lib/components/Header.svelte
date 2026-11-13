@@ -69,7 +69,9 @@
   </button>
 
   {#if isMenuOpen}
-    <div class="@3xl:hidden">
+    <!-- contents: as a flex item of its own, this empty wrapper added a gap
+         and pushed the logo and search along while the drawer was open. -->
+    <div class="contents @3xl:hidden">
       <button
         type="button"
         class="fixed inset-x-0 top-(--header-height) bottom-0 cursor-default bg-surface/80 backdrop-blur-sm"
