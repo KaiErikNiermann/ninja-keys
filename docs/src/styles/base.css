@@ -26,6 +26,18 @@
     scroll-padding-block-start: calc(var(--header-height) + var(--spacing) * 4);
   }
 
+  /* The open nav drawer holds the page still. A drag on its backdrop would
+     otherwise scroll the page, and in Firefox for Android that hides the
+     dynamic toolbar: while it slides away, fixed boxes keep their old height
+     and the bottom strip shows the page unblurred. 48rem is the layout
+     container's @3xl, where the drawer gives way to the sidebar; that
+     container spans the viewport. */
+  @media (width < 48rem) {
+    html:has([aria-controls='nav-drawer'][aria-expanded='true']) {
+      overflow: hidden;
+    }
+  }
+
   body {
     background: var(--color-surface);
     color: var(--color-ink);
