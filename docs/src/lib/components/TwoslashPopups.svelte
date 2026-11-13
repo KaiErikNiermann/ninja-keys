@@ -82,14 +82,19 @@
   .twoslash-floating :global(.twoslash-popup-container) {
     position: static;
     opacity: 1;
+    max-inline-size: 100%;
     transform: none;
     pointer-events: auto;
   }
 
   /* Sizes are set, never relative: twoslash's own sheet draws the docs at
      0.8em of the code, which came to 11px. The type reads like the code
-     blocks (mono, --text-sm); the docs like body text at the same size. */
+     blocks (mono, --text-sm); the docs like body text at the same size.
+     A signature wider than the viewport wraps, keeping its indentation,
+     rather than running off the screen on a phone. */
   .twoslash-floating :global(.twoslash-popup-code) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
     font-family: var(--font-mono);
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
